@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-06-2025 a las 23:45:14
+-- Tiempo de generación: 13-06-2025 a las 01:29:25
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -29,12 +29,12 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `alojamiento` (
   `id` int(10) NOT NULL,
+  `nombre` varchar(30) NOT NULL,
   `imagen` varchar(255) DEFAULT NULL,
   `direccion` varchar(50) DEFAULT NULL,
   `fecha_ingreso` date DEFAULT NULL,
   `fecha_salida` date DEFAULT NULL,
-  `habitacion` int(10) DEFAULT NULL,
-  `capasidad` enum('individual','2 personas','4 personas') DEFAULT NULL,
+  `capacidad` enum('individual','2 personas','4 personas') DEFAULT NULL,
   `seguro` int(10) DEFAULT NULL,
   `precio` decimal(10,0) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -47,6 +47,7 @@ CREATE TABLE `alojamiento` (
 
 CREATE TABLE `autos` (
   `id` int(10) NOT NULL,
+  `nombre` varchar(30) NOT NULL,
   `imagen` varchar(255) DEFAULT NULL,
   `fecha_deposito` date DEFAULT NULL,
   `fecha_devolucion` date DEFAULT NULL,
@@ -98,6 +99,7 @@ INSERT INTO `clientes` (`dni`, `nombre_y_apellido`, `usuario`, `contraseña`, `f
 
 CREATE TABLE `paquete` (
   `id` int(10) NOT NULL,
+  `nombre` varchar(30) NOT NULL,
   `lugar_de_salida` varchar(100) DEFAULT NULL,
   `lugar_de_llegada` varchar(100) DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
@@ -146,14 +148,11 @@ INSERT INTO `pasaje` (`id`, `lugar_de_salida`, `lugar_de_llegada`, `imagen`, `fe
 CREATE TABLE `productos` (
   `id` int(10) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
-  `viaje` enum('internacional','nacional') DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
-  `paquete` enum('individual','grupal','familiar') DEFAULT NULL,
   `id_viaje` int(10) DEFAULT NULL,
   `id_alojamiento` int(10) DEFAULT NULL,
   `id_paquetes` int(10) DEFAULT NULL,
-  `id_autos` int(10) DEFAULT NULL,
-  `fecha_de_salida` date DEFAULT NULL
+  `id_autos` int(10) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -212,8 +211,7 @@ ALTER TABLE `productos`
   ADD KEY `id_viaje` (`id_viaje`),
   ADD KEY `id_alojamiento` (`id_alojamiento`),
   ADD KEY `id_paquetes` (`id_paquetes`),
-  ADD KEY `id_autos` (`id_autos`),
-  ADD KEY `fecha_de_salida` (`fecha_de_salida`);
+  ADD KEY `id_autos` (`id_autos`);
 
 --
 -- Indices de la tabla `ventas`
