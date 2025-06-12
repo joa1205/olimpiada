@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-06-2025 a las 03:51:00
+-- Tiempo de generación: 12-06-2025 a las 23:45:14
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -71,16 +71,24 @@ CREATE TABLE `clientes` (
   `pais` varchar(50) DEFAULT NULL,
   `provincia` varchar(30) DEFAULT NULL,
   `localidad` varchar(70) DEFAULT NULL,
-  `domicilio` varchar(50) DEFAULT NULL
+  `domicilio` varchar(50) DEFAULT NULL,
+  `rol` enum('admin','usuario') DEFAULT 'usuario'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`dni`, `nombre_y_apellido`, `usuario`, `contraseña`, `fecha_de_nacimiento`, `sexo`, `gmail`, `numero_telefonico`, `pais`, `provincia`, `localidad`, `domicilio`) VALUES
-(47825537, 'joaquin paez', 'joa', '$2y$10$uh93R7OD0floYzqpg6HwEerYq1ta7GsESK.Yw9rJ5mBDiDhQGPF5a', '1212-12-12', 'Masculino', 'joap1205@gmail.com', 356454545, 'Argentina', 'cordoba', 'san francisco', 'pirulito333'),
-(13212312, 'Pepito Hernandez', 'pepito', '$2y$10$wXbJlX5UtdGbbefLncd1M.EGGTI5fnuMXfyZgwGYzQK5YYJks7ohm', '2007-12-12', 'Masculino', 'pepito@gmail.com', 2147483647, 'Argentina', 'Santa Fe', 'Santa Fe', 'San luis 25');
+INSERT INTO `clientes` (`dni`, `nombre_y_apellido`, `usuario`, `contraseña`, `fecha_de_nacimiento`, `sexo`, `gmail`, `numero_telefonico`, `pais`, `provincia`, `localidad`, `domicilio`, `rol`) VALUES
+(47583374, 'MAXIMO Hanzo', 'MaximitoUwu', '$2y$10$PJcAC8DiOXKqRbPOjG4b8ew1CR1P.WuYHzoKHPpNXUdMdZMCyhseq', '2006-11-01', 'Femenino', 'sdaaaaaaadsa@asddas', 561452, 'Brasilero', 'Sao pablo', 'mai', 'mi casa', 'usuario'),
+(47586125, 'Mateo Moyano', 'MATUTUBER', '$2y$10$bjh8ZbvhvdXbqctmOlO5H.lqv7PEwDLy9qGNntxHmGWgaOo01s9Va', '2006-11-22', 'Masculino', 'memoyano@escuelasproa.edu.ar', 561452, 'Argentina', 'Santa Fe', 'queseyo', '2222sssd', 'usuario'),
+(2147483647, 'mueeeeeeeeeeee', '111', '$2y$10$eY0tWtA3HfSwxGwiYMICHumFo8CMmaOmvauZSy2HBcSo2MO9GpKLe', '2025-06-10', 'Femenino', 'sdasaddsadas@asd', 2147483647, 'Argentina', 'Cordoba', 'queseyo', '2222sssd', 'admin'),
+(222222222, '222', '222', '$2y$10$5DdsGof.d1BEXoaeYIdvl.UOnD9eSqpjx6nuQpv3NCxP2UHZcyMfG', '2025-06-11', 'Masculino', 'sdsdadas@addasda', 0, 'sddsadsa', 'sdadsadas', 'sddsadsa', 'sdasdas', 'usuario'),
+(0, 'asdasdasdas', '333', '$2y$10$dKxl2updTS4sIonyWESXl..M8JT.ANXsCG.A826aA0bJrkhwj60xK', '2025-06-03', 'Masculino', 'asdasdas@adas', 12312312, 'dsadasd', 'dasdsa', 'asdasdas', 'dsasdasd', 'usuario'),
+(12313123, 'asdasdasdassadasdasda', '555', '$2y$10$Lldak3w6.Qd9Iw47p3/l4uk0Pzif3zdV.k9USGhhR5MnXWx1O3BXC', '2025-06-06', 'Masculino', 'memoyano@escuelasproa.edu.ar', 561452, 'Argentina', 'Sao pablo', 'sddsadsa', 'dsasdasd', 'usuario'),
+(1212121212, 'asdasdasdassadasdasda', '666', '$2y$10$r0EzOz0kR.jk1zk/H6Kr0.AIYm94hhwQ7kwYuUtUQdP/MVsYodk.a', '2025-06-13', 'Masculino', 'memoyano@escuelasproa.edu.ar', 2147483647, 'Argentina', 'Sao pablo', 'queseyo', '2222sssd', 'usuario'),
+(11111111, 'asdasdasdassadasdasda', '777', '$2y$10$oQs4rkpizl1ucfndJUd42.Co9DrR0cY/N/hQj3QYzlVFirprQTcue', '2025-06-13', 'Masculino', 'memoyano@escuelasproa.edu.ar', 561452, 'Argentina', 'Sao pablo', 'queseyo', 'dsasdasd', 'usuario'),
+(32323232, 'mueeeeeeeeeeee', '888', '$2y$10$ScaE1BriKRi1S0e18YSnfeO9.TCVXOh9HPkMdKnpvM3L0mKIWiF/u', '2025-06-05', 'Masculino', 'sdaaaaaaadsa@asddas', 2147483647, 'Argentina', 'Sao pablo', 'queseyo', 'dsasdasd', 'usuario');
 
 -- --------------------------------------------------------
 
@@ -116,16 +124,18 @@ CREATE TABLE `pasaje` (
   `fecha_vuelta` date DEFAULT NULL,
   `metodo_de_transporte` enum('avion','colectivo') DEFAULT NULL,
   `paquete` enum('individual','grupo','familia') DEFAULT NULL,
-  `PRECIO` decimal(10,2) DEFAULT NULL
+  `PRECIO` decimal(10,2) DEFAULT NULL,
+  `duracion` varchar(255) DEFAULT NULL,
+  `calificacion` float DEFAULT NULL,
+  `estrellas` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Volcado de datos para la tabla `pasaje`
 --
 
-INSERT INTO `pasaje` (`id`, `lugar_de_salida`, `lugar_de_llegada`, `imagen`, `fecha_ida`, `fecha_vuelta`, `metodo_de_transporte`, `paquete`, `PRECIO`) VALUES
-(0, 'Buenos Aires', 'Santa Fe', 'https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqmwSnfLN4vPbgYDFVukGdn7KdszyTyAMCGinkny67eEswl6KHpVTrB6vGSB09Fg1NA8lAxCEkx__sI6m1wM2Zpc-340-Ufe3rRV1pHPFw6eEclIS5f5pMvciFlO_eUbP0eqc47=w540-h312-n-k-no', '2024-03-12', '2025-01-12', 'avion', 'individual', 10999.00),
-(1, 'Cordoba', 'Calafate', 'https://www.google.com/imgres?q=turismo%20el%20calafate&imgurl=https%3A%2F%2Fwww.elcalafate.tur.ar%2Fimg%2Fpaginas%2F1%2Fvideos%2Fun-lugar-que-conmueve-el-calafate.jpg&imgrefurl=https%3A%2F%2Fwww.elcalafate.tur.ar%2F&docid=aJlM9FdEoh3QNM&tbnid=BTWaIgIGNi2', '2025-12-11', '2026-01-01', 'avion', 'familia', 360000.00);
+INSERT INTO `pasaje` (`id`, `lugar_de_salida`, `lugar_de_llegada`, `imagen`, `fecha_ida`, `fecha_vuelta`, `metodo_de_transporte`, `paquete`, `PRECIO`, `duracion`, `calificacion`, `estrellas`) VALUES
+(0, 'sao paoblo Brasil', 'lol', 'https://e00-elmundo.uecdn.es/assets/multimedia/imagenes/2015/07/14/14368666394868_997x0.jpg', '2025-06-04', '2025-06-14', 'avion', 'familia', 600.00, '2dias/1noches', 1, 2);
 
 -- --------------------------------------------------------
 

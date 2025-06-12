@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre_bd = "olimpiada"; 
     $servidor = "localhost";
@@ -11,19 +13,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Conexión fallida: " . mysqli_connect_error());
     }
 
-    // NOTA: Los nombres de los campos deben coincidir con los del formulario
     $usuarioing = mysqli_real_escape_string($conexion, $_POST["usuarioing"]);
     $contraseñaing = $_POST["contraseñaing"];
 
-    $sql = "SELECT usuario, contraseña FROM clientes WHERE usuario = '$usuarioing'";
+    $sql = "SELECT * FROM clientes WHERE usuario = '$usuarioing'";
     $resultado = mysqli_query($conexion, $sql);
 
     if ($resultado && mysqli_num_rows($resultado) > 0) {
         $registro = mysqli_fetch_assoc($resultado);
-        
-        if (password_verify($contraseñaing, hash: $registro['contraseña'])) {
+
+        if (password_verify($contraseñaing, $registro['contraseña'])) {
+            $_SESSION['usuario'] = $registro['usuario'];
+            $_SESSION['rol'] = $registro['rol']; // Guardamos el rol en sesión
             header("Location: index.php");
-            die();
+            exit;
         } else {
             echo "❌ Contraseña incorrecta.";
         }
@@ -34,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     mysqli_close($conexion);
 }
 ?>
+
 <form method="post" action="">
     <label>
         Usuario:

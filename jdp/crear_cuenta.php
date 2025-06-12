@@ -56,10 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         )";
 
         if (mysqli_query($conexion, $sql_insert)) {
-            echo "✅ Cuenta creada exitosamente.";
-        } else {
-            echo "❌ Error al crear la cuenta: " . mysqli_error($conexion);
-        }
+    header("Location: index.php?registro=exitoso");
+exit();
+
+} else {
+    echo "❌ Error al crear la cuenta: " . mysqli_error($conexion);
+}
+
     }
 
     mysqli_close($conexion);
@@ -73,27 +76,166 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Crear Cuenta</title>
 </head>
 <body>
-    <h2>Formulario de Registro</h2>
-    <form method="post" action="">
-        <label>DNI: <input type="text" name="dni" required></label><br>
-        <label>Nombre y Apellido: <input type="text" name="nombre_y_apellido" required></label><br>
-        <label>Usuario: <input type="text" name="usuario" required></label><br>
-        <label>Contraseña: <input type="password" name="contraseña" required></label><br>
-        <label>Fecha de nacimiento: <input type="date" name="fecha_de_nacimiento" required></label><br>
-        <label>Sexo:
-            <select name="sexo" required>
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-            </select>
-        </label><br>
-        <label>Gmail: <input type="email" name="gmail" required></label><br>
-        <label>Teléfono: <input type="text" name="numero_telefonico" required></label><br>
-        <label>País: <input type="text" name="pais" required></label><br>
-        <label>Provincia: <input type="text" name="provincia" required></label><br>
-        <label>Localidad: <input type="text" name="localidad" required></label><br>
-        <label>Domicilio: <input type="text" name="domicilio" required></label><br>
-        <input type="submit" value="Crear Cuenta">
-    </form>
+    <div class="form-container">
+        <h2>Formulario de Registro</h2>
+        <form method="post" action="">
+            <div class="form-group">
+                <label>DNI:</label>
+                <input type="text" name="dni" required>
+            </div>
+
+            <div class="form-group">
+                <label>Nombre y Apellido:</label>
+                <input type="text" name="nombre_y_apellido" required>
+            </div>
+
+            <div class="form-group">
+                <label>Usuario:</label>
+                <input type="text" name="usuario" required>
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña:</label>
+                <input type="password" name="contraseña" required>
+            </div>
+
+            <div class="form-group">
+                <label>Fecha de nacimiento:</label>
+                <input type="date" name="fecha_de_nacimiento" required>
+            </div>
+
+            <div class="form-group">
+                <label>Sexo:</label>
+                <select name="sexo" required>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Gmail:</label>
+                <input type="email" name="gmail" required>
+            </div>
+
+            <div class="form-group">
+                <label>Teléfono:</label>
+                <input type="text" name="numero_telefonico" required>
+            </div>
+
+            <div class="form-group">
+                <label>País:</label>
+                <input type="text" name="pais" required>
+            </div>
+
+            <div class="form-group">
+                <label>Provincia:</label>
+                <input type="text" name="provincia" required>
+            </div>
+
+            <div class="form-group">
+                <label>Localidad:</label>
+                <input type="text" name="localidad" required>
+            </div>
+
+            <div class="form-group">
+                <label>Domicilio:</label>
+                <input type="text" name="domicilio" required>
+            </div>
+
+            <input type="submit" value="Crear Cuenta">
+        </form>
+    </div>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 550px;
+            width: 100%;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 26px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 25px;
+                border-radius: 15px;
+            }
+        }
+    </style>
 </body>
 </html>
-

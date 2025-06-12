@@ -1,5 +1,6 @@
 <?php
 include 'conexion.php';
+session_start(); // Asegúrate de iniciar la sesión
 ?>
 
 <!DOCTYPE html>
@@ -9,84 +10,184 @@ include 'conexion.php';
   <meta charset="UTF-8">
   <title>Navbar</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 </head>
 
 <body>
   <nav>
-    <div class="navbar">
-      <a href="index.php" class="nav-item">
-        <i class="fas fa-house"></i>
-        Inicio
+   <nav>
+  <div class="navbar">
+  <!-- Usuario a la izquierda -->
+<div class="navbar-left">
+  <?php if (isset($_SESSION['usuario'])): ?>
+    <span class="nav-item user-info">
+      <i class="fas fa-user"></i>
+      <?php echo htmlspecialchars($_SESSION['usuario']); ?>
+    </span>
+  <?php endif; ?>
+</div>
+
+
+  <!-- Links centrados -->
+  <div class="nav-links">
+    <a href="index.php" class="nav-item">
+      <i class="fas fa-house"></i>
+      Inicio
+    </a>
+    <a href="vuelos.php" class="nav-item active">
+      <i class="fas fa-plane"></i>
+      Vuelos
+    </a>
+    <a href="alojamientos.php" class="nav-item">
+      <i class="fas fa-hotel"></i>
+      Alojamientos
+    </a>
+    <a href="paquetes.php" class="nav-item">
+      <i class="fas fa-suitcase-rolling"></i>
+      Paquetes
+    </a>
+    <a href="autos.php" class="nav-item">
+      <i class="fas fa-car"></i>
+      Autos
+    </a>
+  </div>
+
+  <!-- Acciones a la derecha -->
+  <div class="navbar-right">
+    <?php if (isset($_SESSION['usuario'])): ?>
+      <a href="cerrar_sesion.php" class="nav-item">
+        <i class="fas fa-right-from-bracket"></i>
+        Cerrar sesión
       </a>
-      <a href="vuelos.php" class="nav-item active">
-        <i class="fas fa-plane"></i>
-        Vuelos
+    <?php else: ?>
+      <a href="inicio_sesion.php" class="nav-item">
+        <i class="fas fa-right-to-bracket"></i>
+        Iniciar sesión
       </a>
-      <a href="alojamientos.php" class="nav-item">
-        <i class="fas fa-hotel"></i>
-        Alojamientos
+      <a href="crear_cuenta.php" class="nav-item">
+        <i class="fas fa-user-plus"></i>
+        Registrarse
       </a>
-      <a href="paquetes.php" class="nav-item">
-        <i class="fas fa-suitcase-rolling"></i>
-        Paquetes
-      </a>
-      <a href="autos.php" class="nav-item">
-        <i class="fas fa-car"></i>
-        Autos
-      </a>
-      <a href="" class="nav-item cart">
-        <i class="fas fa-shopping-cart"></i>
-        Carrito(<php $contador ?>)
-      </a>
-    </div>
+    <?php endif; ?>
+    <a href="#" class="nav-item cart">
+      <i class="fas fa-shopping-cart"></i>
+      Carrito(0)
+    </a>
+  </div>
+</div>
   </nav>
+
+  <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+    <div style="text-align: center; margin: 20px;">
+      <a href="formulario_agregar_vuelo.php" class="btn-agregar-vuelo">Agregar nuevo vuelo ✈️</a>
+    </div>
+  <?php endif; ?>
+    <?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id'])) {
+  if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
+    $idEliminar = intval($_POST['eliminar_vuelo_id']);
+    $sqlEliminar = "DELETE FROM pasaje WHERE id = $idEliminar";
+    mysqli_query($conexion, $sqlEliminar);
+  }
+}
+?>
+
   <?php
+  
   $sql = "SELECT * FROM pasaje";
   $listavuelos = mysqli_query($conexion, $sql);
-
-  // Convertimos el resultado en un array asociativo
   $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
   ?>
-  <?php foreach ($listaDatos as $vuelos) { ?>
-    <div class="card">
-      <div class="card-img">
-        <img src="<?php echo $vuelos['imagen']; ?>" alt="">
-        <div class="duration">13 DÍAS / 12 NOCHES</div>
-      </div>
-      <div class="card-content">
-        <p class="package-label">PAQUETE</p>
-        <h2 class="destination"><?php echo $vuelos['lugar_de_llegada']; ?></h2>
-        <div class="rating">
-          <span class="score"><?php echo $vuelos['paquete']; ?></span>
-          <span class="stars">★★★</span>
-        </div>
-        <p class="departure">Saliendo desde <?php echo $vuelos['lugar_de_salida']; ?> en
-          <?php echo $vuelos['metodo_de_transporte']; ?>
-        </p>
-        <div class="price-section">
-          <p class="price"><?php echo $vuelos['PRECIO']; ?></p>
-          <form action="" method="post">
-            <input type="button" value="Añadir al carrito" name=añadir>
-          </form>
 
-        </div>
+  <div class="cards-container">
+    <?php foreach ($listaDatos as $vuelos) { ?>
+  <div class="card">
+    <div class="card-img">
+      <img src="<?php echo $vuelos['imagen']; ?>" alt="">
+      <div class="duration"><?php echo $vuelos['duracion']; ?></div>
+    </div>
+    <div class="card-content">
+      <p class="package-label">PAQUETE</p>
+      <h2 class="destination"><?php echo $vuelos['lugar_de_llegada']; ?></h2>
+      <div class="rating">
+        <span class="score"><?php echo $vuelos['calificacion']; ?>/5</span>
+        <span class="stars">
+          <?php
+          for ($i = 0; $i < intval($vuelos['estrellas']); $i++) {
+            echo "★";
+          }
+          for ($i = intval($vuelos['estrellas']); $i < 5; $i++) {
+            echo "☆";
+          }
+          ?>
+        </span>
+      </div>
+      <p class="departure">Saliendo desde <?php echo $vuelos['lugar_de_salida']; ?> en <?php echo $vuelos['metodo_de_transporte']; ?></p>
+      <div class="price-section">
+        <p class="price"><?php echo $vuelos['PRECIO']; ?></p>
+        <form method="post">
+          <input type="hidden" name="id_vuelo" value="<?php echo $vuelos['id']; ?>">
+          <input type="submit" value="Añadir al carrito" name="añadir">
+        </form>
+
+        <!-- Botón solo para admin -->
+        <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+          <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este vuelo?');">
+            <input type="hidden" name="eliminar_vuelo_id" value="<?php echo $vuelos['id']; ?>">
+            <input type="submit" value="Eliminar vuelo 🗑️" class="btn-eliminar">
+          </form>
+        <?php endif; ?>
       </div>
     </div>
+  </div>
+<?php } ?>
 
-  <?php } ?>
-
-
-
-
-
-
+  </div>
 
 </body>
 
 </html>
 
 <style>
+  .btn-eliminar {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  background-color: #b02a37;
+}
+
+  .btn-agregar-vuelo {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-agregar-vuelo:hover {
+    background-color: #0056b3;
+  }
+
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin: 40px auto;
+    max-width: 1200px;
+  }
+
   .card {
     width: 320px;
     border-radius: 12px;
@@ -96,11 +197,10 @@ include 'conexion.php';
     background-color: white;
   }
 
-  .card-img {
-    background-size: cover;
-    background-position: center;
+  .card-img img {
+    width: 100%;
     height: 180px;
-    position: relative;
+    object-fit: cover;
   }
 
   .duration {
@@ -153,8 +253,7 @@ include 'conexion.php';
     font-size: 14px;
   }
 
-  .departure,
-  .details {
+  .departure {
     font-size: 14px;
     color: #444;
     margin: 2px 0;
@@ -170,76 +269,56 @@ include 'conexion.php';
     color: #222;
   }
 
-  .note {
-    font-size: 12px;
-    color: #666;
-  }
-
-  .footer {
-    border-top: 1px solid #eee;
-    margin-top: 12px;
-    padding-top: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12px;
-  }
-
-  .points {
-    color: #333;
-  }
-
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-
   .navbar {
-    display: flex;
-    justify-content: center;
-    background-color: #f8f8f8;
-    padding: 10px 0;
-    border-bottom: 2px solid #ddd;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f8f8;
+  padding: 10px 30px;
+  border-bottom: 2px solid #ddd;
+  position: relative;
+}
 
-  .nav-item {
-    text-align: center;
-    margin: 0 20px;
-    color: #555;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.3s ease;
-  }
+.navbar-left,
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
 
-  .nav-item i {
-    font-size: 20px;
-    display: block;
-    margin-bottom: 5px;
-  }
+.nav-links {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
-  .nav-item:hover {
-    color: rgb(0, 20, 202);
-  }
+.nav-item {
+  text-align: center;
+  margin: 0 10px;
+  color: #555;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
 
-  .cart {
-    position: absolute;
-    right: 30px;
-    top: 3%;
-    transform: translateY(-50%);
-  }
+.nav-item i {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 5px;
+}
 
-  .card-img {
-    position: relative;
-    overflow: hidden;
-  }
+.nav-item:hover {
+  color: #3f0071;
+}
 
-  .card-img img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-    max-height: 180px;
-    /* Altura máxima */
-    border-bottom: 1px solid #ddd;
-  }
+.user-info {
+  font-weight: bold;
+  font-size: 18px;
+  color: #3f0071;
+}
+
+.cart {
+  position: relative;
+}
 </style>
