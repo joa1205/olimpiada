@@ -103,11 +103,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id']))
   <div class="card">
     <div class="card-img">
       <img src="<?php echo $vuelos['imagen']; ?>" alt="">
-      <div class="duration"><?php echo $vuelos['duracion']; ?></div>
     </div>
     <div class="card-content">
-      <p class="package-label">PAQUETE</p>
+      <p class="package-label">VUELO</p>
       <h2 class="destination"><?php echo $vuelos['lugar_de_llegada']; ?></h2>
+      <div class="duration"><?php echo $vuelos['duracion']; ?></div>
       <div class="rating">
         <span class="score"><?php echo $vuelos['calificacion']; ?>/5</span>
         <span class="stars">
@@ -204,7 +204,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id']))
   }
 
   .duration {
-    position: absolute;
     bottom: 8px;
     left: 8px;
     background-color: rgba(0, 0, 0, 0.7);
@@ -212,6 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id']))
     font-size: 12px;
     padding: 4px 8px;
     border-radius: 6px;
+    display: inline-block;
   }
 
   .card-content {
