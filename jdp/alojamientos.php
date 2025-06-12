@@ -72,11 +72,77 @@ session_start(); // MUY importante para acceder a $_SESSION
     <a href="#" class="nav-item cart">
       <i class="fas fa-shopping-cart"></i>
       Carrito(0)
+      
     </a>
   </div>
 </div>
   </nav>
+  <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+    <div style="text-align: center; margin: 20px;">
+      <a href="formulario_agregar_vuelo.php" class="btn-agregar-vuelo">Agregar nuevo vuelo ✈️</a>
+    </div>
+  <?php endif; ?>
+    <?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id'])) {
+  if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
+    $idEliminar = intval($_POST['eliminar_vuelo_id']);
+    $sqlEliminar = "DELETE FROM pasaje WHERE id = $idEliminar";
+    mysqli_query($conexion, $sqlEliminar);
+  }
+}
+?>
+
+  <?php
   
+  $sql = "SELECT * FROM alojamiento";
+  $listaalojamientos = mysqli_query($conexion, $sql);
+  $listaDatos = mysqli_fetch_all($listaalojamientos, MYSQLI_ASSOC);
+  ?>
+
+  <div class="cards-container">
+    <?php foreach ($listaDatos as $alojamientos) { ?>
+  <div class="card">
+    <div class="card-img">
+      <img src="<?php echo $alojamientos['imagen']; ?>" alt="">
+    </div>
+    <div class="card-content">
+      <p class="package-label">alojamiento</p>
+      <h2 class="direccion"><?php echo $alojamientos['direccion']; ?></h2>
+      <div class="fechain"><?php echo $alojamientos['fecha de entrada']; ?></div>
+      <div class="rating">
+        <span class="score"><?php echo $alojamientos['calificacion']; ?>/5</span>
+        <span class="stars">
+          <?php
+          for ($i = 0; $i < intval($alojamientos['estrellas']); $i++) {
+            echo "★";
+          }
+          for ($i = intval($alojamientos['estrellas']); $i < 5; $i++) {
+            echo "☆";
+          }
+          ?>
+        </span>
+      </div>
+      <p class="departure">Saliendo desde <?php echo $alojamientos['lugar_de_salida']; ?> en <?php echo $alojamientos['metodo_de_transporte']; ?></p>
+      <div class="price-section">
+        <p class="price"><?php echo $alojamientos['PRECIO']; ?></p>
+        <form method="post">
+          <input type="hidden" name="id_vuelo" value="<?php echo $alojamientos['id']; ?>">
+          <input type="submit" value="Añadir al carrito" name="añadir">
+        </form>
+
+        <!-- Botón solo para admin -->
+        <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+          <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este vuelo?');">
+            <input type="hidden" name="eliminar_vuelo_id" value="<?php echo $alojamientos['id']; ?>">
+            <input type="submit" value="Eliminar vuelo 🗑️" class="btn-eliminar">
+          </form>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
+<?php } ?>
+
+  </div>
 
 </body>
 </html>
