@@ -25,7 +25,6 @@ session_start(); // MUY importante para acceder a $_SESSION
       <i class="fas fa-user"></i>
       <?php echo htmlspecialchars($_SESSION['usuario']); ?>
     </span>
-    HOLAAA
   <?php endif; ?>
 </div>
 
