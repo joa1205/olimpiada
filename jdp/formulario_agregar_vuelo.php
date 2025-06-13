@@ -19,7 +19,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $precio = $_POST['precio'];
     $calificacion = $_POST['calificacion'];
     $estrellas = $_POST['estrellas'];
-
     $sql = "INSERT INTO pasaje (
         lugar_de_salida, lugar_de_llegada, imagen, fecha_ida, fecha_vuelta,
         duracion, metodo_de_transporte, paquete, PRECIO, calificacion, estrellas
@@ -29,10 +28,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     )";
 
     if (mysqli_query($conexion, $sql)) {
-        echo "<script>alert('Vuelo agregado correctamente'); window.location='vuelos.php';</script>";
-    } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conexion);
-    }
+    // Obtener el ID del vuelo recién insertado
+    $id_viaje = mysqli_insert_id($conexion);
+
+    // Insertar en productos con ese ID
+
+    $sql2 = "INSERT INTO productos (nombre, precio, id_viaje) VALUES ('$lugar_salida', '$precio', '$id_viaje')";
+    mysqli_query($conexion, $sql2);
+
+    echo "<script>alert('Vuelo agregado correctamente'); window.location='vuelos.php';</script>";
+} else {
+    echo "Error: " . $sql . "<br>" . mysqli_error($conexion);
+}
+
 }
 
 ?>
