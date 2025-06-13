@@ -28,15 +28,18 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `alojamiento` (
-  `id` int(10) NOT NULL,
+  `id` int(10) NOT NULL ,
+  `nombre` varchar(100) DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
   `direccion` varchar(50) DEFAULT NULL,
   `fecha_ingreso` date DEFAULT NULL,
   `fecha_salida` date DEFAULT NULL,
-  `habitacion` int(10) DEFAULT NULL,
-  `capasidad` enum('individual','2 personas','4 personas') DEFAULT NULL,
+  `capacidad` enum('individual','2 personas','4 personas') DEFAULT NULL,
   `seguro` int(10) DEFAULT NULL,
-  `precio` decimal(10,0) DEFAULT NULL
+  `precio` decimal(10,0) DEFAULT NULL,
+  `duracion` varchar(255) DEFAULT NULL,
+  `calificacion` float DEFAULT NULL,
+  `estrellas` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------

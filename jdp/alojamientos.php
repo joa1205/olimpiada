@@ -72,17 +72,210 @@ session_start(); // MUY importante para acceder a $_SESSION
     <a href="#" class="nav-item cart">
       <i class="fas fa-shopping-cart"></i>
       Carrito(0)
+      
     </a>
   </div>
 </div>
   </nav>
+  <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+    <div style="text-align: center; margin: 20px;">
+      <a href="formulario_agregar_alojamiento.php" class="btn-agregar-alojamiento">Agregar nuevo alojamiento🏨</a>
+    </div>
+  <?php endif; ?>
+    <?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_alojamiento_id'])) {
+  if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
+    $idEliminar = intval($_POST['eliminar_alojamiento_id']);
+    $sqlEliminar = "DELETE FROM alojamiento WHERE id = $idEliminar";
+    mysqli_query($conexion, $sqlEliminar);
+  }
+}
+?>
+
+  <?php
   
+  $sql = "SELECT * FROM alojamiento";
+  $listaalojamientos = mysqli_query($conexion, $sql);
+  $listaDatos = mysqli_fetch_all($listaalojamientos, MYSQLI_ASSOC);
+  ?>
+
+  <div class="cards-container">
+    <?php foreach ($listaDatos as $alojamientos) { ?>
+  <div class="card">
+    <div class="card-img">
+      <img src="<?php echo $alojamientos['imagen']; ?>" alt="">
+    </div>
+    <div class="card-content">
+      <p class="package-label">alojamiento</p>
+      <h2 class="nombre"><?php echo $alojamientos['nombre']; ?></h2>
+      <div class="duration"><?php echo $alojamientos['duracion']; ?></div>
+      <div class="rating">
+        <span class="score"><?php echo $alojamientos['calificacion']; ?>/5</span>
+        <span class="stars">
+          <?php
+          for ($i = 0; $i < intval($alojamientos['estrellas']); $i++) {
+            echo "★";
+          }
+          for ($i = intval($alojamientos['estrellas']); $i < 5; $i++) {
+            echo "☆";
+          }
+          ?>
+        </span>
+      </div>
+      <p class="departure">Ubicado en <?php echo $alojamientos['direccion']; ?></p>
+      <div class="ubicacion">
+       <a href="https://www.google.com/maps/search/Alvear+Palace+Hotel" 
+        style class="ubicacion">
+        Ver en Google Maps 📍
+      </a>
+      </div>
+      <div class="price-section">
+        <p class="price"><?php echo $alojamientos['precio']; ?></p>
+        <form method="post">
+          <input type="hidden" name="id_alojamiento" value="<?php echo $alojamientos['id']; ?>">
+          <input type="submit" value="Añadir al carrito" name="añadir">
+          
+        </form>
+            
+        <!-- Botón solo para admin -->
+        <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+          <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este alojamiento?');">
+            <input type="hidden" name="eliminar_alojamiento_id" value="<?php echo $alojamientos['id']; ?>">
+            <input type="submit" value="Eliminar alojamiento 🗑️" class="btn-eliminar">
+          </form>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
+<?php } ?>
+
+  </div>
 
 </body>
 </html>
 
 <style>
-    .navbar {
+  .btn-eliminar {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  background-color: #b02a37;
+}
+
+  .btn-agregar-alojamiento {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-agregar-vuelo:hover {
+    background-color: #0056b3;
+  }
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin: 40px auto;
+    max-width: 1200px;
+  }
+
+  .card {
+    width: 320px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    background-color: white;
+  }
+
+  .card-img img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .duration {
+    bottom: 8px;
+    left: 8px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  .card-content {
+    padding: 16px;
+  }
+
+  .package-label {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .destination {
+    font-size: 18px;
+    margin: 4px 0;
+    color: #333;
+  }
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0;
+  }
+
+  .score {
+    background-color: #2ecc71;
+    color: white;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .stars {
+    color: #f39c12;
+    font-size: 14px;
+  }
+
+  .departure {
+    font-size: 14px;
+    color: #444;
+    margin: 2px 0;
+  }
+
+  .price-section {
+    margin: 12px 0;
+  }
+
+  .price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #222;
+  }
+
+  .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -134,4 +327,5 @@ session_start(); // MUY importante para acceder a $_SESSION
 .cart {
   position: relative;
 }
+  
   </style>
