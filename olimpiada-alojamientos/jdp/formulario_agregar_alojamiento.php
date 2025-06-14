@@ -3,13 +3,14 @@ include 'conexion.php';
 session_start();
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
-    header("Location: alojamiento.php");
+    header("Location: alojamientos.php");
     exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = $_POST['nombre'];
     $imagen = $_POST['imagen'];
+    $mapalink = $_POST['mapalink'];
     $direccion = $_POST['direccion'];
     $duracion = $_POST['duracion'];
     $fecha_ingreso = $_POST['fecha_ingreso'];
@@ -21,15 +22,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $estrellas = $_POST['estrellas'];
 
     $sql = "INSERT INTO alojamiento (
-        nombre, imagen, direccion, duracion, fecha_ingreso,
+        nombre, imagen, mapalink, direccion, duracion, fecha_ingreso,
         fecha_salida, capacidad, seguro, precio, calificacion, estrellas
     ) VALUES (
-        '$nombre', '$imagen', '$direccion', '$duracion', '$fecha_ingreso',
+        '$nombre', '$imagen', '$mapalink', '$direccion', '$duracion', '$fecha_ingreso',
         '$fecha_salida', '$capacidad', '$seguro', '$precio', '$calificacion', '$estrellas'
     )";
 
     if (mysqli_query($conexion, $sql)) {
-        echo "<script>alert('alojamiento agregado correctamente'); window.location='alojamiento.php';</script>";
+        echo "<script>alert('alojamiento agregado correctamente'); window.location='alojamientos.php';</script>";
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conexion);
     }
@@ -53,6 +54,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <label>URL de imagen</label>
     <input type="text" name="imagen" required>
+
+    <label>link mapa</label>
+    <input type="text" name="mapalink" required>
 
     <label>direccion</label>
     <input type="text" name="direccion" required>

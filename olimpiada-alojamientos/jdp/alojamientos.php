@@ -1,20 +1,21 @@
 <?php
 include 'conexion.php';
-session_start(); // Asegúrate de iniciar la sesión
+session_start(); // MUY importante para acceder a $_SESSION
+
+
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <title>Navbar</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
 </head>
-
 <body>
-  <nav>
-   <nav>
+    <nav>
+    <nav>
   <div class="navbar">
   <!-- Usuario a la izquierda -->
 <div class="navbar-left">
@@ -71,21 +72,21 @@ session_start(); // Asegúrate de iniciar la sesión
     <a href="#" class="nav-item cart">
       <i class="fas fa-shopping-cart"></i>
       Carrito(0)
+      
     </a>
   </div>
 </div>
   </nav>
-
   <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
     <div style="text-align: center; margin: 20px;">
-      <a href="formulario_agregar_vuelo.php" class="btn-agregar-vuelo">Agregar nuevo vuelo ✈️</a>
+      <a href="formulario_agregar_alojamiento.php" class="btn-agregar-alojamiento">Agregar nuevo alojamiento🏨</a>
     </div>
   <?php endif; ?>
     <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_alojamiento_id'])) {
   if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
-    $idEliminar = intval($_POST['eliminar_vuelo_id']);
-    $sqlEliminar = "DELETE FROM pasaje WHERE id = $idEliminar";
+    $idEliminar = intval($_POST['eliminar_alojamiento_id']);
+    $sqlEliminar = "DELETE FROM alojamiento WHERE id = $idEliminar";
     mysqli_query($conexion, $sqlEliminar);
   }
 }
@@ -93,47 +94,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id']))
 
   <?php
   
-  $sql = "SELECT * FROM pasaje";
-  $listavuelos = mysqli_query($conexion, $sql);
-  $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
+  $sql = "SELECT * FROM alojamiento";
+  $listaalojamientos = mysqli_query($conexion, $sql);
+  $listaDatos = mysqli_fetch_all($listaalojamientos, MYSQLI_ASSOC);
   ?>
 
   <div class="cards-container">
-    <?php foreach ($listaDatos as $vuelos) { ?>
+    <?php foreach ($listaDatos as $alojamientos) { ?>
   <div class="card">
     <div class="card-img">
-      <img src="<?php echo $vuelos['imagen']; ?>" alt="">
+      <img src="<?php echo $alojamientos['imagen']; ?>" alt="">
     </div>
     <div class="card-content">
-      <p class="package-label">VUELO</p>
-      <h2 class="destination"><?php echo $vuelos['lugar_de_llegada']; ?></h2>
-      <div class="duration"><?php echo $vuelos['duracion']; ?></div>
+      <p class="package-label">alojamiento</p>
+      <h2 class="nombre"><?php echo $alojamientos['nombre']; ?></h2>
+      <div class="duration"><?php echo $alojamientos['duracion']; ?></div>
       <div class="rating">
-        <span class="score"><?php echo $vuelos['calificacion']; ?>/5</span>
+        <span class="score"><?php echo $alojamientos['calificacion']; ?>/5</span>
         <span class="stars">
           <?php
-          for ($i = 0; $i < intval($vuelos['estrellas']); $i++) {
+          for ($i = 0; $i < intval($alojamientos['estrellas']); $i++) {
             echo "★";
           }
-          for ($i = intval($vuelos['estrellas']); $i < 5; $i++) {
+          for ($i = intval($alojamientos['estrellas']); $i < 5; $i++) {
             echo "☆";
           }
           ?>
         </span>
       </div>
-      <p class="departure">Saliendo desde <?php echo $vuelos['lugar_de_salida']; ?> en <?php echo $vuelos['metodo_de_transporte']; ?></p>
-      <div class="price-section">
-        <p class="price"><?php echo $vuelos['PRECIO']; ?></p>
-        <form method="post">
-          <input type="hidden" name="id_vuelo" value="<?php echo $vuelos['id']; ?>">
-          <input type="submit" value="Añadir al carrito" name="añadir">
-        </form>
+      <p class="departure">Ubicado en <?php echo $alojamientos['direccion']; ?></p>
 
+      <div class="ubicacion">
+       <a href="<?php echo $alojamientos['mapalink']; ?>" 
+        style class="ubicacion">
+        Ver en Google Maps 📍
+      </a>
+      </div>
+      <div class="price-section">
+        <p class="price"><?php echo $alojamientos['precio']; ?></p>
+        <form method="post">
+          <input type="hidden" name="id_alojamiento" value="<?php echo $alojamientos['id']; ?>">
+          <input type="submit" value="Añadir al carrito" name="añadir">
+          
+        </form>
+             <!-- Botón de modificar solo para admin -->
+          <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+          <form action="modificacion_alojamiento.php" method="get" style="margin-top: 5px;">
+          <input type="hidden" name="id_alojamiento" value="<?php echo $vuelos['id']; ?>">
+        <input type="submit" value="Modificar alojamiento ✏️" class="btn-modificar">
+      </form>
+<?php endif; ?>
         <!-- Botón solo para admin -->
         <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
-          <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este vuelo?');">
-            <input type="hidden" name="eliminar_vuelo_id" value="<?php echo $vuelos['id']; ?>">
-            <input type="submit" value="Eliminar vuelo 🗑️" class="btn-eliminar">
+          <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este alojamiento?');">
+            <input type="hidden" name="eliminar_alojamiento_id" value="<?php echo $alojamientos['id']; ?>">
+            <input type="submit" value="Eliminar alojamiento 🗑️" class="btn-eliminar">
           </form>
         <?php endif; ?>
       </div>
@@ -144,7 +159,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id']))
   </div>
 
 </body>
-
 </html>
 
 <style>
@@ -164,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id']))
   background-color: #b02a37;
 }
 
-  .btn-agregar-vuelo {
+  .btn-agregar-alojamiento {
     display: inline-block;
     padding: 10px 20px;
     background-color: #007BFF;
@@ -178,7 +192,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id']))
   .btn-agregar-vuelo:hover {
     background-color: #0056b3;
   }
-
   .cards-container {
     display: flex;
     flex-wrap: wrap;
@@ -321,4 +334,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id']))
 .cart {
   position: relative;
 }
-</style>
+.btn-modificar {
+  margin-top: 6px;
+  padding: 6px 12px;
+  background-color: #ffc107;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-modificar:hover {
+  background-color: #e0a800;
+}
+  </style>

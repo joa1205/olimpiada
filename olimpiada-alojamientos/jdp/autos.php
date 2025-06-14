@@ -5,6 +5,7 @@ session_start(); // MUY importante para acceder a $_SESSION
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,7 +16,7 @@ session_start(); // MUY importante para acceder a $_SESSION
 </head>
 <body>
     <nav>
-    <nav>
+  <nav>
   <div class="navbar">
   <!-- Usuario a la izquierda -->
 <div class="navbar-left">
@@ -72,20 +73,19 @@ session_start(); // MUY importante para acceder a $_SESSION
     <a href="#" class="nav-item cart">
       <i class="fas fa-shopping-cart"></i>
       Carrito(0)
-      
     </a>
   </div>
 </div>
   </nav>
   <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
     <div style="text-align: center; margin: 20px;">
-      <a href="formulario_agregar_alojamiento.php" class="btn-agregar-alojamiento">Agregar nuevo alojamiento🏨</a>
+      <a href="formulario_agregar_auto.php" class="btn-agregar-auto">Agregar nuevo vehiculo</a>
     </div>
   <?php endif; ?>
     <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_alojamiento_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_auto_id'])) {
   if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
-    $idEliminar = intval($_POST['eliminar_alojamiento_id']);
+    $idEliminar = intval($_POST['eliminar_auto_id']);
     $sqlEliminar = "DELETE FROM alojamiento WHERE id = $idEliminar";
     mysqli_query($conexion, $sqlEliminar);
   }
@@ -94,54 +94,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_alojamiento_
 
   <?php
   
-  $sql = "SELECT * FROM alojamiento";
-  $listaalojamientos = mysqli_query($conexion, $sql);
-  $listaDatos = mysqli_fetch_all($listaalojamientos, MYSQLI_ASSOC);
+  $sql = "SELECT * FROM autos";
+  $listaautos = mysqli_query($conexion, $sql);
+  $listaDatos = mysqli_fetch_all($listaautos, MYSQLI_ASSOC);
   ?>
 
   <div class="cards-container">
-    <?php foreach ($listaDatos as $alojamientos) { ?>
+    <?php foreach ($listaDatos as $autos) { ?>
   <div class="card">
     <div class="card-img">
-      <img src="<?php echo $alojamientos['imagen']; ?>" alt="">
+      <img src="<?php echo $autos['imagen']; ?>" alt="">
     </div>
     <div class="card-content">
-      <p class="package-label">alojamiento</p>
-      <h2 class="nombre"><?php echo $alojamientos['nombre']; ?></h2>
-      <div class="duration"><?php echo $alojamientos['duracion']; ?></div>
+      <p class="package-label">vehiculos</p>
+      <h2 class="nombre"><?php echo $autos['nombre']; ?></h2>
+      <div class="capacidad"><?php echo $autos['capacidad']; ?></div>
       <div class="rating">
-        <span class="score"><?php echo $alojamientos['calificacion']; ?>/5</span>
+        <span class="score"><?php echo $autos['calificacion']; ?>/5</span>
         <span class="stars">
           <?php
-          for ($i = 0; $i < intval($alojamientos['estrellas']); $i++) {
+          for ($i = 0; $i < intval($autos['estrellas']); $i++) {
             echo "★";
           }
-          for ($i = intval($alojamientos['estrellas']); $i < 5; $i++) {
+          for ($i = intval($autos['estrellas']); $i < 5; $i++) {
             echo "☆";
           }
           ?>
         </span>
       </div>
-      <p class="departure">Ubicado en <?php echo $alojamientos['direccion']; ?></p>
-      <div class="ubicacion">
-       <a href="https://www.google.com/maps/search/Alvear+Palace+Hotel" 
-        style class="ubicacion">
-        Ver en Google Maps 📍
-      </a>
       </div>
       <div class="price-section">
-        <p class="price"><?php echo $alojamientos['precio']; ?></p>
+        <p class="price"><?php echo $autos['precio']; ?></p>
         <form method="post">
-          <input type="hidden" name="id_alojamiento" value="<?php echo $alojamientos['id']; ?>">
+          <input type="hidden" name="id_autos" value="<?php echo $autos['id']; ?>">
           <input type="submit" value="Añadir al carrito" name="añadir">
           
         </form>
-            
+             <!-- Botón de modificar solo para admin -->
+          <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+          <form action="modificacion_auto.php" method="get" style="margin-top: 5px;">
+          <input type="hidden" name="id_auto" value="<?php echo $vuelos['id']; ?>">
+        <input type="submit" value="Modificar auto ✏️" class="btn-modificar">
+      </form>
+<?php endif; ?>
         <!-- Botón solo para admin -->
         <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
-          <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este alojamiento?');">
-            <input type="hidden" name="eliminar_alojamiento_id" value="<?php echo $alojamientos['id']; ?>">
-            <input type="submit" value="Eliminar alojamiento 🗑️" class="btn-eliminar">
+          <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este vehiculo?');">
+            <input type="hidden" name="eliminar_auto_id" value="<?php echo $alojamientos['id']; ?>">
+            <input type="submit" value="Eliminar auto 🗑️" class="btn-eliminar">
           </form>
         <?php endif; ?>
       </div>
@@ -171,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_alojamiento_
   background-color: #b02a37;
 }
 
-  .btn-agregar-alojamiento {
+  .btn-agregar-auto {
     display: inline-block;
     padding: 10px 20px;
     background-color: #007BFF;
@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_alojamiento_
     transition: background-color 0.3s ease;
   }
 
-  .btn-agregar-vuelo:hover {
+  .btn-agregar-auto:hover {
     background-color: #0056b3;
   }
   .cards-container {
@@ -327,5 +327,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_alojamiento_
 .cart {
   position: relative;
 }
-  
+.btn-modificar {
+  margin-top: 6px;
+  padding: 6px 12px;
+  background-color: #ffc107;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-modificar:hover {
+  background-color: #e0a800;
+} 
   </style>
