@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_vuelo'])) {
   <meta charset="UTF-8">
   <title>Vuelos</title>
 
-  <link rel="stylesheet" href="/olimpiada/style.css">
+  <link rel="stylesheet" href="style.css">
 
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
