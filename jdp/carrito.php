@@ -39,6 +39,42 @@ if (!empty($_SESSION['carrito'])) {
   <meta charset="UTF-8">
   <title>Carrito de Compras</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<h1><i class="fas fa-shopping-cart"></i> Carrito de Compras (<?php echo array_sum($_SESSION['carrito']); ?>)</h1>
+
+<div class="carrito-container">
+  <?php if (empty($productos)): ?>
+    <div class="carrito-vacio">
+      <p>No hay productos en el carrito.</p>
+      <a href="vuelos.php">← Seguir comprando</a>
+    </div>
+  <?php else: ?>
+    <?php foreach ($productos as $producto): ?>
+      <div class="producto">
+        <img src="<?php echo $producto['imagen']; ?>" alt="Imagen del producto">
+        <div class="producto-info">
+          <h3><?php echo $producto['lugar_de_llegada']; ?></h3>
+          <p>Desde: <?php echo $producto['lugar_de_salida']; ?> en <?php echo $producto['metodo_de_transporte']; ?></p>
+          <p class="cantidad">Cantidad: <?php echo $producto['cantidad']; ?></p>
+          <p class="subtotal">Subtotal: $<?php echo number_format($producto['subtotal'], 2); ?></p>
+        </div>
+        <form class="eliminar-form" method="post">
+          <input type="hidden" name="eliminar_id" value="<?php echo $producto['id']; ?>">
+          <button type="submit">Eliminar</button>
+        </form>
+      </div>
+    <?php endforeach; ?>
+
+    <div class="total">Total a pagar: $<?php echo number_format($total, 2); ?></div>
+    <a class="volver" href="vuelos.php">← Seguir comprando</a>
+  <?php endif; ?>
+</div>
+
+</body>
+</html>
+
+
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -158,38 +194,3 @@ if (!empty($_SESSION['carrito'])) {
       text-decoration: underline;
     }
   </style>
-</head>
-<body>
-
-<h1><i class="fas fa-shopping-cart"></i> Carrito de Compras (<?php echo array_sum($_SESSION['carrito']); ?>)</h1>
-
-<div class="carrito-container">
-  <?php if (empty($productos)): ?>
-    <div class="carrito-vacio">
-      <p>No hay productos en el carrito.</p>
-      <a href="vuelos.php">← Seguir comprando</a>
-    </div>
-  <?php else: ?>
-    <?php foreach ($productos as $producto): ?>
-      <div class="producto">
-        <img src="<?php echo $producto['imagen']; ?>" alt="Imagen del producto">
-        <div class="producto-info">
-          <h3><?php echo $producto['lugar_de_llegada']; ?></h3>
-          <p>Desde: <?php echo $producto['lugar_de_salida']; ?> en <?php echo $producto['metodo_de_transporte']; ?></p>
-          <p class="cantidad">Cantidad: <?php echo $producto['cantidad']; ?></p>
-          <p class="subtotal">Subtotal: $<?php echo number_format($producto['subtotal'], 2); ?></p>
-        </div>
-        <form class="eliminar-form" method="post">
-          <input type="hidden" name="eliminar_id" value="<?php echo $producto['id']; ?>">
-          <button type="submit">Eliminar</button>
-        </form>
-      </div>
-    <?php endforeach; ?>
-
-    <div class="total">Total a pagar: $<?php echo number_format($total, 2); ?></div>
-    <a class="volver" href="vuelos.php">← Seguir comprando</a>
-  <?php endif; ?>
-</div>
-
-</body>
-</html>
