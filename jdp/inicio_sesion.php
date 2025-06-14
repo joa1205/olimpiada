@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuarioing = mysqli_real_escape_string($conexion, $_POST["usuarioing"]);
     $contraseñaing = $_POST["contraseñaing"];
 
-    $sql = "SELECT * FROM clientes WHERE usuario = '$usuarioing'";
+    $sql = "SELECT * FROM usuarios WHERE usuario = '$usuarioing'";
     $resultado = mysqli_query($conexion, $sql);
 
     if ($resultado && mysqli_num_rows($resultado) > 0) {

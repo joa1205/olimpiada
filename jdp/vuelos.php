@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_vuelo'])) {
         <?php endif; ?>
         <a href="carrito.php" class="nav-item cart">
           <i class="fas fa-shopping-cart"></i>
-          Carrito(<?php echo array_sum($_SESSION['carrito']); ?>)
+          Carrito(<?php echo array_sum(array: $_SESSION['carrito']); ?>)
         </a>
       </div>
     </div>
