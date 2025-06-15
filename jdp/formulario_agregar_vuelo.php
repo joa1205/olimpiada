@@ -96,3 +96,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: #f4f4f4;
+        padding: 40px;
+    }
+    h2 {
+        margin-bottom: 30px;
+    }
+    form {
+        background: white;
+        max-width: 600px;
+        margin: auto;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+        color: #333;
+    }
+    input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-top: 5px;
+    }
+    button {
+        margin-top: 25px;
+        padding: 12px;
+        background-color: #3f0071;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+    button:hover {
+        background-color: #5b0cbf;
+    }
+</style>
