@@ -1,22 +1,20 @@
 <?php
 include 'conexion.php';
-session_start(); // MUY importante para acceder a $_SESSION
-
-
+session_start(); // Asegúrate de iniciar la sesión
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Navbar</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
 </head>
+
 <body>
-    <nav>
   <nav>
+   <nav>
   <div class="navbar">
   <!-- Usuario a la izquierda -->
 <div class="navbar-left">
@@ -77,6 +75,7 @@ session_start(); // MUY importante para acceder a $_SESSION
   </div>
 </div>
   </nav>
+
   <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
     <div style="text-align: center; margin: 20px;">
       <a href="formulario_agregar_auto.php" class="btn-agregar-auto">Agregar nuevo vehiculo</a>
@@ -86,7 +85,7 @@ session_start(); // MUY importante para acceder a $_SESSION
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_auto_id'])) {
   if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
     $idEliminar = intval($_POST['eliminar_auto_id']);
-    $sqlEliminar = "DELETE FROM alojamiento WHERE id = $idEliminar";
+    $sqlEliminar = "DELETE FROM autos WHERE id = $idEliminar";
     mysqli_query($conexion, $sqlEliminar);
   }
 }
@@ -99,14 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_auto_id'])) 
   $listaDatos = mysqli_fetch_all($listaautos, MYSQLI_ASSOC);
   ?>
 
-  <div class="cards-container">
+<div class="cards-container">
     <?php foreach ($listaDatos as $autos) { ?>
   <div class="card">
     <div class="card-img">
       <img src="<?php echo $autos['imagen']; ?>" alt="">
     </div>
     <div class="card-content">
-      <p class="package-label">vehiculos</p>
+      <p class="package-label">Vehiculo</p>
       <h2 class="nombre"><?php echo $autos['nombre']; ?></h2>
       <div class="capacidad"><?php echo $autos['capacidad']; ?></div>
       <div class="rating">
@@ -122,36 +121,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_auto_id'])) 
           ?>
         </span>
       </div>
-      </div>
       <div class="price-section">
         <p class="price"><?php echo $autos['precio']; ?></p>
         <form method="post">
           <input type="hidden" name="id_autos" value="<?php echo $autos['id']; ?>">
           <input type="submit" value="Añadir al carrito" name="añadir">
-          
+      </div>
+    </div>   
         </form>
-             <!-- Botón de modificar solo para admin -->
+          <!-- Botón de modificar solo para admin -->
           <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
-          <form action="modificacion_auto.php" method="get" style="margin-top: 5px;">
-          <input type="hidden" name="id_auto" value="<?php echo $vuelos['id']; ?>">
-        <input type="submit" value="Modificar auto ✏️" class="btn-modificar">
-      </form>
-<?php endif; ?>
+          <form action="modificar_auto.php" method="get" style="margin-top: 5px;">
+          <input type="hidden" name="id_autos" value="<?php echo $autos['id']; ?>">
+        <input type="submit" value="Modificar vehiculo✏️" class="btn-modificar">
+       </form>
+        <?php endif; ?>
+
         <!-- Botón solo para admin -->
         <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
           <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este vehiculo?');">
-            <input type="hidden" name="eliminar_auto_id" value="<?php echo $alojamientos['id']; ?>">
+            <input type="hidden" name="eliminar_auto_id" value="<?php echo $autos['id']; ?>">
             <input type="submit" value="Eliminar auto 🗑️" class="btn-eliminar">
           </form>
         <?php endif; ?>
-      </div>
-    </div>
+    
   </div>
-<?php } ?>
+    <?php } ?>
 
-  </div>
+</div>
 
 </body>
+
 </html>
 
 <style>
@@ -185,6 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_auto_id'])) 
   .btn-agregar-auto:hover {
     background-color: #0056b3;
   }
+
   .cards-container {
     display: flex;
     flex-wrap: wrap;
@@ -341,5 +342,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_auto_id'])) 
 
 .btn-modificar:hover {
   background-color: #e0a800;
-} 
-  </style>
+}
+
+</style>

@@ -12,7 +12,7 @@ if (!isset($_GET['id_autos'])) {
     exit();
 }
 
-$id_vuelo = $_GET['id_autos'];
+$id_autos = $_GET['id_autos'];
 
 // Obtener los datos actuales del vuelo
 $resultado = mysqli_query($conexion, "SELECT * FROM autos WHERE id = $id_autos");
@@ -22,8 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = $_POST['nombre'];
     $imagen = $_POST['imagen'];
     $capacidad = $_POST['capacidad'];
-    $fecha_deposito = $_POST['fecha_deposito'];
-    $fecha_devolucion = $_POST['fecha_devolucion'];
     $precio = $_POST['precio'];
     $calificacion = $_POST['calificacion'];
     $estrellas = $_POST['estrellas'];
@@ -31,9 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "UPDATE autos SET 
         nombre = '$nombre',
         imagen = '$imagen',
-        fecha_deposito = '$fecha_deposito',
-        fecha_devolucion = '$fecha_devolucion',
-        capacidad = '$duracion',
+        capacidad = '$capacidad',
         PRECIO = '$precio',
         calificacion = '$calificacion',
         estrellas = '$estrellas'
@@ -62,25 +58,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="text" name="nombre" value="<?php echo $autos['nombre']; ?>" required>
 
     <label>URL de imagen</label>
-    <input type="text" name="imagen" value="<?php echo $vuelo['imagen']; ?>" required>
-
-    <label>Fecha de deposito del vehiculo</label>
-    <input type="date" name="fecha_deposito" value="<?php echo $vuelo['fecha_deposito']; ?>" required>
-
-    <label>Fecha de devolucion del vehiculo</label>
-    <input type="date" name="fecha_devolucion" value="<?php echo $vuelo['fecha_devolucion']; ?>" required>
+    <input type="text" name="imagen" value="<?php echo $autos['imagen']; ?>" required>
 
     <label>capacidad</label>
-    <input type="text" name="capacidad" value="<?php echo $vuelo['capacidad']; ?>" required>
+    <input type="text" name="capacidad" value="<?php echo $autos['capacidad']; ?>" required>
 
     <label>Precio</label>
-    <input type="text" name="precio" value="<?php echo $vuelo['PRECIO']; ?>" required>
+    <input type="text" name="precio" value="<?php echo $autos['precio']; ?>" required>
 
     <label>Calificación</label>
-    <input type="number" step="0.1" min="0" max="5" name="calificacion" value="<?php echo $vuelo['calificacion']; ?>" required>
+    <input type="number" step="0.1" min="0" max="5" name="calificacion" value="<?php echo $autos['calificacion']; ?>" required>
 
     <label>Estrellas</label>
-    <input type="number" min="1" max="5" name="estrellas" value="<?php echo $vuelo['estrellas']; ?>" required>
+    <input type="number" min="1" max="5" name="estrellas" value="<?php echo $autos['estrellas']; ?>" required>
 
     <button type="submit">Modificar Vuelo</button>
 </form>

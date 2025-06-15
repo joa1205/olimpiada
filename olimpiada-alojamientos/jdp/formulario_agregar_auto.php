@@ -3,11 +3,12 @@ include 'conexion.php';
 session_start();
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
-    header("Location: vuelos.php");
+    header("Location: autos.php");
     exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nombre = $_POST['nombre'];
     $imagen = $_POST['imagen'];
     $capacidad = $_POST['capacidad'];
     $fecha_deposito = $_POST['fecha_deposito'];
@@ -17,13 +18,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $estrellas = $_POST['estrellas'];
 
     $sql = "INSERT INTO autos (
-         imagen, capacidad, fecha_deposito, fecha_devolucion, precio, calificacion, estrellas
+         imagen, nombre, capacidad, fecha_deposito, fecha_devolucion, precio, calificacion, estrellas
     ) VALUES (
-        '$imagen', '$capacidad', '$fecha_deposito', '$fecha_devolucion', '$precio', '$calificacion', '$estrellas'
+        '$imagen', '$nombre', '$capacidad', '$fecha_deposito', '$fecha_devolucion', '$precio', '$calificacion', '$estrellas'
     )";
 
     if (mysqli_query($conexion, $sql)) {
-        echo "<script>alert('Vuelo agregado correctamente'); window.location='autos.php';</script>";
+        echo "<script>alert('vehiuculo agregado correctamente'); window.location='autos.php';</script>";
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conexion);
     }
