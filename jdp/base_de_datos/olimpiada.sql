@@ -58,13 +58,15 @@ INSERT INTO `alojamiento` (`id`, `nombre`, `imagen`, `direccion`, `fecha_ingreso
 
 CREATE TABLE `autos` (
   `id` int(10) NOT NULL,
-  `nombre` varchar(30) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
+  `capacidad` enum('2 personas','4 personas','+5 personas') DEFAULT NULL,
   `fecha_deposito` date DEFAULT NULL,
   `fecha_devolucion` date DEFAULT NULL,
+  `calificacion` float DEFAULT NULL,
+  `estrellas` int(11) DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci
 -- --------------------------------------------------------
 
 --
