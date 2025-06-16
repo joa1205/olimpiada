@@ -31,6 +31,7 @@ CREATE TABLE `alojamiento` (
   `id` int(10) NOT NULL,
   `nombre` varchar(30) NOT NULL,
   `imagen` varchar(255) DEFAULT NULL,
+  `mapalink` varchar(255) DEFAULT NULL,
   `direccion` varchar(50) DEFAULT NULL,
   `fecha_ingreso` date DEFAULT NULL,
   `fecha_salida` date DEFAULT NULL,
