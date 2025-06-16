@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fecha_deposito = $_POST['fecha_deposito'];
     $fecha_devolucion = $_POST['fecha_devolucion'];
     $precio = $_POST['precio'];
-    $calificacion = $_POST['calificacion'];º
+    $calificacion = $_POST['calificacion'];
     $estrellas = $_POST['estrellas'];
 
     $sql = "INSERT INTO autos (
