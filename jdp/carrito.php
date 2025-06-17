@@ -10,7 +10,6 @@ if (!isset($_SESSION['carrito'])) {
 $id_usuario_logueado = null;
 if (isset($_SESSION['usuario'])) {
     $nombre_usuario = $_SESSION['usuario'];
-    // Consulta sin preparar
     $consulta_usuario = "SELECT id FROM usuarios WHERE usuario = '$nombre_usuario' LIMIT 1";
     $resultado_usuario = mysqli_query($conexion, $consulta_usuario);
     if ($fila = mysqli_fetch_assoc($resultado_usuario)) {
@@ -18,7 +17,7 @@ if (isset($_SESSION['usuario'])) {
     }
 }
 
-$id_usuario = $id_usuario_logueado; // Para consistencia
+$id_usuario = $id_usuario_logueado;
 
 // Aumentar o disminuir cantidad
 if (
@@ -93,7 +92,16 @@ if ($id_usuario) {
     if (mysqli_num_rows($resultado_carrito_activo) > 0) {
         $id_carrito = mysqli_fetch_assoc($resultado_carrito_activo)['id'];
 
-        $sql_productos = "SELECT dc.id_producto, dc.cantidad, dc.precio_unitario, dc.tipo_producto, p.*, v.* FROM detalle_carrito dc LEFT JOIN productos p ON (dc.tipo_producto = 'producto' AND dc.id_producto = p.id) LEFT JOIN pasaje v ON (dc.tipo_producto = 'vuelo' AND dc.id_producto = v.id) WHERE dc.id_carrito = $id_carrito";
+        $sql_productos = "SELECT dc.id_producto, dc.cantidad, dc.precio_unitario, dc.tipo_producto, 
+                                 p.nombre AS nombre_producto, 
+                                 v.lugar_de_llegada, v.duracion AS duracion_vuelo, 
+                                 a.nombre AS nombre_alojamiento, a.duracion AS duracion_alojamiento 
+                          FROM detalle_carrito dc 
+                          LEFT JOIN productos p ON (dc.tipo_producto = 'producto' AND dc.id_producto = p.id) 
+                          LEFT JOIN pasaje v ON (dc.tipo_producto = 'vuelo' AND dc.id_producto = v.id) 
+                          LEFT JOIN alojamiento a ON (dc.tipo_producto = 'alojamiento' AND dc.id_producto = a.id) 
+                          WHERE dc.id_carrito = $id_carrito";
+
         $resultado_productos = mysqli_query($conexion, $sql_productos);
         $productos = mysqli_fetch_all($resultado_productos, MYSQLI_ASSOC);
 
@@ -105,7 +113,19 @@ if ($id_usuario) {
     $carrito_sesion = $_SESSION['carrito'];
     if (!empty($carrito_sesion)) {
         $ids = implode(",", array_map('intval', array_keys($carrito_sesion)));
-        $sql = "SELECT p.id AS id_producto, p.precio AS precio_producto, v.*, 'producto' AS tipo_producto FROM productos p LEFT JOIN pasaje v ON p.id_viaje = v.id WHERE p.id IN ($ids)";
+        $sql = "
+            SELECT p.id AS id_producto, p.precio AS precio_producto, p.nombre, 'producto' AS tipo_producto, NULL AS lugar_de_llegada, NULL AS duracion
+            FROM productos p
+            WHERE p.id IN ($ids)
+            UNION
+            SELECT v.id AS id_producto, v.precio AS precio_producto, NULL AS nombre, 'vuelo' AS tipo_producto, v.lugar_de_llegada, v.duracion
+            FROM pasaje v
+            WHERE v.id IN ($ids)
+            UNION
+            SELECT a.id AS id_producto, a.precio AS precio_producto, a.nombre, 'alojamiento' AS tipo_producto, NULL AS lugar_de_llegada, a.duracion
+            FROM alojamiento a
+            WHERE a.id IN ($ids)
+        ";
         $resultado = mysqli_query($conexion, $sql);
         $productos_sesion = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
 
@@ -119,7 +139,6 @@ if ($id_usuario) {
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -152,12 +171,16 @@ if ($id_usuario) {
                 <div>
                     <strong>
                         <?php 
-                        echo $item['tipo_producto'] === 'vuelo' 
-                            ? ($item['lugar_de_llegada'] ?? 'Vuelo') 
-                            : ($item['nombre'] ?? 'Producto');
+                        if ($item['tipo_producto'] === 'vuelo') {
+                            echo $item['lugar_de_llegada'] ?? 'Vuelo';
+                        } elseif ($item['tipo_producto'] === 'producto') {
+                            echo $item['nombre_producto'] ?? $item['nombre'] ?? 'Producto';
+                        } elseif ($item['tipo_producto'] === 'alojamiento') {
+                            echo $item['nombre_alojamiento'] ?? $item['nombre'] ?? 'Alojamiento';
+                        }
                         ?>
                     </strong><br>
-                    <?= $item['duracion'] ?? ''; ?><br>
+                    <?= $item['duracion_vuelo'] ?? $item['duracion_alojamiento'] ?? $item['duracion'] ?? ''; ?><br>
                     $<?= number_format($item['precio_unitario'], 2); ?> x <?= $item['cantidad']; ?>
                 </div>
 

@@ -91,12 +91,14 @@ $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Vuelos</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
   <!-- Barra de navegación -->
   <nav>
@@ -126,7 +128,8 @@ $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
           <a href="crear_cuenta.php" class="nav-item"><i class="fas fa-user-plus"></i>Registrarse</a>
         <?php endif; ?>
         <!-- Contador carrito -->
-        <a href="carrito.php" class="nav-item cart"><i class="fas fa-shopping-cart"></i>Carrito(<?php echo $contador_carrito; ?>)</a>
+        <a href="carrito.php" class="nav-item cart"><i
+            class="fas fa-shopping-cart"></i>Carrito(<?php echo $contador_carrito; ?>)</a>
       </div>
     </div>
   </nav>
@@ -154,12 +157,15 @@ $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
             <span class="stars">
               <?php
               // Mostrar estrellas llenas y vacías
-              for ($i = 0; $i < intval($vuelos['estrellas']); $i++) echo "★";
-              for ($i = intval($vuelos['estrellas']); $i < 5; $i++) echo "☆";
+              for ($i = 0; $i < intval($vuelos['estrellas']); $i++)
+                echo "★";
+              for ($i = intval($vuelos['estrellas']); $i < 5; $i++)
+                echo "☆";
               ?>
             </span>
           </div>
-          <p class="departure">Saliendo desde <?php echo $vuelos['lugar_de_salida']; ?> en <?php echo $vuelos['metodo_de_transporte']; ?></p>
+          <p class="departure">Saliendo desde <?php echo $vuelos['lugar_de_salida']; ?> en
+            <?php echo $vuelos['metodo_de_transporte']; ?></p>
           <div class="price-section">
             <p class="price">$<?php echo $vuelos['PRECIO']; ?></p>
 
@@ -171,6 +177,13 @@ $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
 
             <!-- Botón eliminar vuelo (solo admin) -->
             <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+              <!-- Botón de modificar solo para admin -->
+              <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+                <form action="modificacion_vuelos.php" method="get" style="margin-top: 5px;">
+                  <input type="hidden" name="id_autos" value="<?php echo $autos['id']; ?>">
+                  <input type="submit" value="Modificar vuelo✏️" class="btn-modificar">
+                </form>
+              <?php endif; ?>
               <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este vuelo?');">
                 <input type="hidden" name="eliminar_vuelo_id" value="<?php echo $vuelos['id']; ?>">
                 <input type="submit" value="Eliminar vuelo 🗑️" class="btn-eliminar">
@@ -182,4 +195,5 @@ $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
     <?php endforeach; ?>
   </div>
 </body>
+
 </html>
