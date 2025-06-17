@@ -63,17 +63,64 @@ shuffle($datos);
         ?>
       </div>
 
-      <!-- Acciones derecha -->
-      <div class="navbar-right">
-        <?php if (isset($_SESSION['usuario'])): ?>
-          <a href="cerrar_sesion.php" class="nav-item"><i class="fas fa-right-from-bracket"></i> Cerrar sesión</a>
-        <?php else: ?>
-          <a href="inicio_sesion.php" class="nav-item"><i class="fas fa-right-to-bracket"></i> Iniciar sesión</a>
-          <a href="crear_cuenta.php" class="nav-item"><i class="fas fa-user-plus"></i> Registrarse</a>
-        <?php endif; ?>
-        <a href="#" class="nav-item cart"><i class="fas fa-shopping-cart"></i> Carrito(0)</a>
-      </div>
-    </div>
+  <!-- Links centrados -->
+  <div class="nav-links">
+    <a href="index.php" class="nav-item">
+      <i class="fas fa-house"></i>
+      Inicio
+    </a>
+    <a href="vuelos.php" class="nav-item active">
+      <i class="fas fa-plane"></i>
+      Vuelos
+    </a>
+    <a href="alojamientos.php" class="nav-item">
+      <i class="fas fa-hotel"></i>
+      Alojamientos
+    </a>
+    <a href="paquetes.php" class="nav-item">
+      <i class="fas fa-suitcase-rolling"></i>
+      Paquetes
+    </a>
+    <a href="autos.php" class="nav-item">
+      <i class="fas fa-car"></i>
+      Autos
+    </a>
+    <?php
+  if (isset($_SESSION['rol'])) {
+    if ($_SESSION['rol'] === 'admin') {
+      echo '<a href="detalles_ventas.php" class="nav-item"><i class="fas fa-chart-line"></i> Ventas</a>';
+    } elseif ($_SESSION['rol'] === 'cliente') {
+      echo '<a href="mis_compras.php" class="nav-item"><i class="fas fa-receipt"></i> Mis Compras</a>';
+    }
+  }
+?>
+
+  </div>
+
+  <!-- Acciones a la derecha -->
+  <div class="navbar-right">
+    <?php if (isset($_SESSION['usuario'])): ?>
+      <a href="cerrar_sesion.php" class="nav-item">
+        <i class="fas fa-right-from-bracket"></i>
+        Cerrar sesión
+      </a>
+    <?php else: ?>
+      <a href="inicio_sesion.php" class="nav-item">
+        <i class="fas fa-right-to-bracket"></i>
+        Iniciar sesión
+      </a>
+      <a href="crear_cuenta.php" class="nav-item">
+        <i class="fas fa-user-plus"></i>
+        Registrarse
+      </a>
+    <?php endif; ?>
+    <a href="#" class="nav-item cart">
+      <i class="fas fa-shopping-cart"></i>
+      Carrito(0)
+    </a>
+  </div>
+</div>
+
   </nav>
 
   <!-- Carrusel de opciones -->

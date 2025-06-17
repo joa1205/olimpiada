@@ -76,7 +76,7 @@ if ($id_usuario) {
 }
 
 // Proceso para eliminar un vuelo (solo si es admin y se recibe POST con id a eliminar)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_paquetes_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id'])) {
   if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
     $idEliminar = intval($_POST['eliminar_vuelo_id']);
     mysqli_query($conexion, "DELETE FROM paquetes WHERE id = $idEliminar");
@@ -115,15 +115,6 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
         <a href="alojamientos.php" class="nav-item"><i class="fas fa-hotel"></i>Alojamientos</a>
         <a href="paquetes.php" class="nav-item"><i class="fas fa-suitcase-rolling"></i>Paquetes</a>
         <a href="autos.php" class="nav-item"><i class="fas fa-car"></i>Autos</a>
-        <?php
-  if (isset($_SESSION['rol'])) {
-    if ($_SESSION['rol'] === 'admin') {
-      echo '<a href="detalles_ventas.php" class="nav-item"><i class="fas fa-chart-line"></i> Ventas</a>';
-    } elseif ($_SESSION['rol'] === 'cliente') {
-      echo '<a href="mis_compras.php" class="nav-item"><i class="fas fa-receipt"></i> Mis Compras</a>';
-    }
-  }
-?>
       </div>
 
       <!-- Login/logout y carrito -->
@@ -157,7 +148,7 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
         <div class="card-content">
           <p class="package-label">paquetes</p>
           <h2 class="nombre"><?php echo $paquetes['nombre']; ?></h2>
-          <h2 class="lugar_llegada"><?php echo $paquetes['lugar_de_llegada']; ?></h2>
+          <h2 class="lugar_llegada"><?php echo $paquetes['lugar_llegada']; ?></h2>
           <div class="direccion"><?php echo $paquetes['direccion']; ?></div>
           <div class="rating">
             <span class="score"><?php echo $paquetes['calificacion']; ?>/5</span>
@@ -169,7 +160,7 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
               ?>
             </span>
           </div>
-          <p class="departure">Saliendo desde <?php echo $paquetes['lugar_de_salida']; ?> el dia <?php echo $paquetes['fecha_ida']; ?></p>
+          <p class="departure">Saliendo desde <?php echo $paquetes['lugar_salida']; ?> el dia <?php echo $paquetes['fecha_ida']; ?></p>
           <div class="price-section">
             <p class="price">$<?php echo $paquetes['precio']; ?></p>
 
@@ -189,7 +180,7 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
             <!-- Botón eliminar vuelo (solo admin) -->
             <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
               <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este paquete de viaje?');">
-                <input type="hidden" name="eliminar_paquetes_id" value="<?php echo $paquetes['id']; ?>">
+                <input type="hidden" name="eliminar_vuelo_id" value="<?php echo $paquetes['id']; ?>">
                 <input type="submit" value="Eliminar paquete 🗑️" class="btn-eliminar">
               </form>
             <?php endif; ?>

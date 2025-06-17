@@ -118,6 +118,7 @@ if ($id_usuario) {
         }
     }
 }
+
 // Procesar compra
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comprar']) && $id_usuario) {
     $consulta_carrito = "SELECT id FROM carrito WHERE id_usuario = $id_usuario AND estado = 'activo' LIMIT 1";
@@ -167,8 +168,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comprar']) && $id_usu
 }
 
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -234,11 +233,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comprar']) && $id_usu
                 <input type="hidden" name="vaciar" value="1">
                 <button class="btn btn-vaciar">Vaciar carrito 🗑️</button>
             </form>
-            <form method="post" style="display:inline;">
+        <form method="post" style="display:inline;">
                 <input type="hidden" name="comprar" value="1">
                 <button class="btn" style="background-color:#2ecc71; color:white;">Comprar ✅</button>
-            </form>
-
+        </form>
         </div>
     <?php endif; ?>
 </div>

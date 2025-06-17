@@ -20,8 +20,8 @@ $paquetes = mysqli_fetch_assoc($resultado);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = $_POST['nombre'];
-    $lugar_de_salida = $_POST['lugar_de_salida'];
-    $lugar_de_llegada = $_POST['lugar_de_llegada'];
+    $lugar_salida = $_POST['lugar_salida'];
+    $lugar_llegada = $_POST['lugar_llegada'];
     $imagen = $_POST['imagen'];
     $fecha_ida = $_POST['fecha_ida'];
     $fecha_vuelta = $_POST['fecha_vuelta'];
@@ -35,8 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "UPDATE paquetes SET 
         nombre = '$nombre',
-        lugar_de_salida = '$lugar_de_salida',
-        lugar_de_llegada = '$lugar_de_llegada',
+        lugar_salida = '$lugar_salida',
+        lugar_llegada = '$lugar_llegada',
         imagen = '$imagen',
         fecha_ida = '$fecha_ida',
         fecha_vuelta = '$fecha_vuelta',
@@ -71,10 +71,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="text" name="nombre" value="<?php echo $paquetes['nombre']; ?>" required>
 
     <label>Lugar de salida</label>
-    <input type="text" name="lugar_de_salida" value="<?php echo $paquetes['lugar_de_salida']; ?>" required>
+    <input type="text" name="lugar_salida" value="<?php echo $paquetes['lugar_salida']; ?>" required>
 
     <label>Lugar de llegada</label>
-    <input type="text" name="lugar_de_llegada" value="<?php echo $paquetes['lugar_de_llegada']; ?>" required>
+    <input type="text" name="lugar_llegada" value="<?php echo $paquetes['lugar_llegada']; ?>" required>
 
     <label>URL de imagen</label>
     <input type="text" name="imagen" value="<?php echo $paquetes['imagen']; ?>" required>

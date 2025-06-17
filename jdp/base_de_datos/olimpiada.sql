@@ -53,40 +53,31 @@ INSERT INTO `alojamiento` (`id`, `nombre`, `imagen`, `direccion`, `fecha_ingreso
 
 -- --------------------------------------------------------
 
---
+-- ------------------------------------------------------------
 -- Estructura de tabla para la tabla `autos`
---
-
+-- ------------------------------------------------------------
 CREATE TABLE `autos` (
-  `id` int(10) NOT NULL,
-  `nombre` varchar(30) NOT NULL,
-  `imagen` varchar(255) DEFAULT NULL,
-  `fecha_deposito` date DEFAULT NULL,
-  `fecha_devolucion` date DEFAULT NULL,
-  `precio` decimal(10,2) DEFAULT NULL,
-  `calificacion` float DEFAULT NULL,
-  `estrellas` int(11) DEFAULT NULL,
-  `capacidad` enum('2 personas','4 personas','+5 personas','') DEFAULT NULL
+  `id` INT(10) NOT NULL,
+  `nombre` VARCHAR(100) DEFAULT NULL,
+  `imagen` VARCHAR(255) DEFAULT NULL,
+  `capacidad` ENUM('2 personas','4 personas','+5 personas') DEFAULT NULL,
+  `fecha_deposito` DATE DEFAULT NULL,
+  `fecha_devolucion` DATE DEFAULT NULL,
+  `calificacion` FLOAT DEFAULT NULL,
+  `estrellas` INT(11) DEFAULT NULL,
+  `precio` DECIMAL(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Volcado de datos para la tabla `autos`
---
-
-INSERT INTO `autos` (`id`, `nombre`, `imagen`, `fecha_deposito`, `fecha_devolucion`, `precio`, `calificacion`, `estrellas`, `capacidad`) VALUES
-(14, 'auto 555', 'sexo', '2025-06-18', '2025-06-25', 1000000.00, 4, 5, '2 personas');
-
--- --------------------------------------------------------
-
---
+-- ------------------------------------------------------------
 -- Estructura de tabla para la tabla `carrito`
---
-
+-- ------------------------------------------------------------
 CREATE TABLE `carrito` (
-  `id` int(11) NOT NULL,
-  `id_usuario` int(11) DEFAULT NULL,
-  `fecha_creacion` datetime DEFAULT current_timestamp(),
-  `estado` enum('activo','comprado','cancelado') DEFAULT 'activo'
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id_usuario` INT(11) DEFAULT NULL,
+  `fecha_creacion` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `estado` ENUM('activo','comprado','cancelado') DEFAULT 'activo',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -220,60 +211,22 @@ INSERT INTO `detalle_carrito` (`id`, `id_carrito`, `id_producto`, `tipo_producto
 -- Estructura de tabla para la tabla `detalle_compra`
 --
 
-CREATE TABLE `detalle_compra` (
-  `id` int(11) NOT NULL,
-  `id_compra` int(11) NOT NULL,
-  `id_producto` int(11) NOT NULL,
-  `tipo_producto` enum('producto','vuelo') NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `precio_unitario` decimal(10,2) NOT NULL,
-  `estado` enum('en proceso','aceptado','rechazado') DEFAULT 'en proceso'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `detalle_compra`
---
-
-INSERT INTO `detalle_compra` (`id`, `id_compra`, `id_producto`, `tipo_producto`, `cantidad`, `precio_unitario`, `estado`) VALUES
-(13, 12, 10, 'vuelo', 1, 600.00, 'aceptado'),
-(14, 13, 13, 'vuelo', 1, 600.00, 'aceptado'),
-(15, 14, 13, 'vuelo', 2, 600.00, 'rechazado'),
-(16, 15, 8, 'vuelo', 4, 300000.00, 'aceptado'),
-(17, 15, 13, 'vuelo', 1, 600.00, 'aceptado'),
-(18, 16, 1, '', 2, 0.00, 'aceptado'),
-(19, 17, 13, 'vuelo', 2, 600.00, 'rechazado'),
-(20, 18, 15, 'vuelo', 1, 300000.00, 'rechazado');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `paquetes`
---
-
 CREATE TABLE `paquetes` (
   `id` int(10) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `lugar_de_salida` varchar(100) NOT NULL,
-  `lugar_de_llegada` varchar(100) NOT NULL,
-  `imagen` varchar(255) NOT NULL,
-  `fecha_ida` date NOT NULL,
-  `fecha_vuelta` date NOT NULL,
-  `direccion` varchar(50) NOT NULL,
-  `fecha_ingreso` date NOT NULL,
-  `fecha_salida` date NOT NULL,
+  `nombre` varchar(30) NOT NULL,
+  `lugar_salida` varchar(100) DEFAULT NULL,
+  `lugar_de_llegada` varchar(100) DEFAULT NULL,
+  `imagen` varchar(255) DEFAULT NULL,
+  `fecha_ida` date DEFAULT NULL,
+  `fecha_vuelta` date DEFAULT NULL,
+  `direccion` varchar(50) DEFAULT NULL,
+  `fecha_ingreso` date DEFAULT NULL,
+  `fecha_salida` date DEFAULT NULL,
   `paquete` enum('individual','grupal','familiar') DEFAULT NULL,
-  `calificacion` float NOT NULL,
-  `estrellas` int(11) NOT NULL,
-  `precio` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `paquetes`
---
-
-INSERT INTO `paquetes` (`id`, `nombre`, `lugar_de_salida`, `lugar_de_llegada`, `imagen`, `fecha_ida`, `fecha_vuelta`, `direccion`, `fecha_ingreso`, `fecha_salida`, `paquete`, `calificacion`, `estrellas`, `precio`) VALUES
-(1, 'porno', 'peru', 'paupue annobon', 'knlaslnkca', '2025-06-04', '2025-07-03', 'tetolandia 666', '2025-06-17', '2025-06-27', 'grupal', 2, 3, 1000000.00),
-(2, 'viaje a colombia', 'buenos aries, argentina', 'colobia ecuador,', 'aaaa', '2025-06-18', '2025-06-25', 'critina presa 666', '2025-06-18', '2025-07-01', 'individual', 1, 2, 202020.00);
+  `calificacion` float DEFAULT NULL,
+  `estrellas` int(11) DEFAULT NULL,
+  `precio` decimal(10,2) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 

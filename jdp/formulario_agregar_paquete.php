@@ -9,8 +9,8 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = $_POST['nombre'];
-    $lugar_de_salida = $_POST['lugar_de_salida'];
-    $lugar_de_llegada = $_POST['lugar_de_llegada'];
+    $lugar_salida = $_POST['lugar_salida'];
+    $lugar_llegada = $_POST['lugar_llegada'];
     $imagen = $_POST['imagen'];
     $fecha_ida = $_POST['fecha_ida'];
     $fecha_vuelta = $_POST['fecha_vuelta'];
@@ -22,20 +22,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $calificacion = $_POST['calificacion'];
     $estrellas = $_POST['estrellas'];
     $sql = "INSERT INTO paquetes (
-        nombre, lugar_de_salida, lugar_de_llegada, imagen, fecha_ida, fecha_vuelta,
+        nombre, lugar_salida, lugar_llegada, imagen, fecha_ida, fecha_vuelta,
         direccion, fecha_ingreso, fecha_salida, paquete, precio, calificacion, estrellas
     ) VALUES (
-        '$nombre', '$lugar_de_salida', '$lugar_de_llegada', '$imagen', '$fecha_ida', '$fecha_vuelta',
+        '$nombre', '$lugar_salida', '$lugar_llegada', '$imagen', '$fecha_ida', '$fecha_vuelta',
         '$direccion', '$fecha_ingreso','$fecha_salida', '$paquete', '$precio', '$calificacion', '$estrellas'
     )";
 
     if (mysqli_query($conexion, $sql)) {
     // Obtener el ID del vuelo recién insertado
-    $id_paquete = mysqli_insert_id($conexion);
+    $id_paquetes = mysqli_insert_id($conexion);
 
     // Insertar en productos con ese ID
 
-    $id_paquete = mysqli_insert_id($conexion);
+    $id_paquetes = mysqli_insert_id($conexion);
     $sql2 = "INSERT INTO productos (nombre, precio, id) VALUES ('$nombre', '$precio', '$id')";
     mysqli_query($conexion, $sql2);
 
@@ -66,10 +66,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="text" name="nombre" required>
 
     <label>Lugar de salida</label>
-    <input type="text" name="lugar_de_salida" required>
+    <input type="text" name="lugar_salida" required>
 
     <label>Lugar de llegada</label>
-    <input type="text" name="lugar_de_llegada" required>
+    <input type="text" name="lugar_llegada" required>
 
     <label>URL de imagen</label>
     <input type="text" name="imagen" required>
