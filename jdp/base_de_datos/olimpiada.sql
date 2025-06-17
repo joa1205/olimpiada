@@ -52,32 +52,31 @@ INSERT INTO `alojamiento` (`id`, `nombre`, `imagen`, `direccion`, `fecha_ingreso
 
 -- --------------------------------------------------------
 
---
+-- ------------------------------------------------------------
 -- Estructura de tabla para la tabla `autos`
---
-
+-- ------------------------------------------------------------
 CREATE TABLE `autos` (
-  `id` int(10) NOT NULL,
-  `nombre` varchar(100) DEFAULT NULL,
-  `imagen` varchar(255) DEFAULT NULL,
-  `capacidad` enum('2 personas','4 personas','+5 personas') DEFAULT NULL,
-  `fecha_deposito` date DEFAULT NULL,
-  `fecha_devolucion` date DEFAULT NULL,
-  `calificacion` float DEFAULT NULL,
-  `estrellas` int(11) DEFAULT NULL,
-  `precio` decimal(10,2) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci
--- --------------------------------------------------------
+  `id` INT(10) NOT NULL,
+  `nombre` VARCHAR(100) DEFAULT NULL,
+  `imagen` VARCHAR(255) DEFAULT NULL,
+  `capacidad` ENUM('2 personas','4 personas','+5 personas') DEFAULT NULL,
+  `fecha_deposito` DATE DEFAULT NULL,
+  `fecha_devolucion` DATE DEFAULT NULL,
+  `calificacion` FLOAT DEFAULT NULL,
+  `estrellas` INT(11) DEFAULT NULL,
+  `precio` DECIMAL(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
+-- ------------------------------------------------------------
 -- Estructura de tabla para la tabla `carrito`
---
-
+-- ------------------------------------------------------------
 CREATE TABLE `carrito` (
-  `id` int(11) NOT NULL,
-  `id_usuario` int(11) DEFAULT NULL,
-  `fecha_creacion` datetime DEFAULT current_timestamp(),
-  `estado` enum('activo','comprado','cancelado') DEFAULT 'activo'
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id_usuario` INT(11) DEFAULT NULL,
+  `fecha_creacion` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `estado` ENUM('activo','comprado','cancelado') DEFAULT 'activo',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -147,10 +146,10 @@ INSERT INTO `detalle_carrito` (`id`, `id_carrito`, `id_producto`, `tipo_producto
 -- Estructura de tabla para la tabla `paquete`
 --
 
-CREATE TABLE `paquete` (
+CREATE TABLE `paquetes` (
   `id` int(10) NOT NULL,
   `nombre` varchar(30) NOT NULL,
-  `lugar_de_salida` varchar(100) DEFAULT NULL,
+  `lugar_salida` varchar(100) DEFAULT NULL,
   `lugar_de_llegada` varchar(100) DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
   `fecha_ida` date DEFAULT NULL,
@@ -158,7 +157,10 @@ CREATE TABLE `paquete` (
   `direccion` varchar(50) DEFAULT NULL,
   `fecha_ingreso` date DEFAULT NULL,
   `fecha_salida` date DEFAULT NULL,
-  `paquete` enum('individual','grupal','familiar') DEFAULT NULL
+  `paquete` enum('individual','grupal','familiar') DEFAULT NULL,
+  `calificacion` float DEFAULT NULL,
+  `estrellas` int(11) DEFAULT NULL,
+  `precio` decimal(10,2) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
