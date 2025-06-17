@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_paquetes'])) {
     }
 
     // Obtener el precio del vuelo desde la tabla productos
-    $precio_query = mysqli_query($conexion, "SELECT precio FROM productos WHERE id_viaje = $id_paquetes");
+    $precio_query = mysqli_query($conexion, "SELECT precio FROM productos WHERE id_paquetes = $id_paquetes");
     $precio_unitario = 0;
     if ($precio_row = mysqli_fetch_assoc($precio_query)) {
       $precio_unitario = floatval($precio_row['precio']);
