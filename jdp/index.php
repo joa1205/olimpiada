@@ -48,6 +48,16 @@ session_start(); // MUY importante para acceder a $_SESSION
       <i class="fas fa-car"></i>
       Autos
     </a>
+    <?php
+  if (isset($_SESSION['rol'])) {
+    if ($_SESSION['rol'] === 'admin') {
+      echo '<a href="detalles_ventas.php" class="nav-item"><i class="fas fa-chart-line"></i> Ventas</a>';
+    } elseif ($_SESSION['rol'] === 'cliente') {
+      echo '<a href="mis_compras.php" class="nav-item"><i class="fas fa-receipt"></i> Mis Compras</a>';
+    }
+  }
+?>
+
   </div>
 
   <!-- Acciones a la derecha -->

@@ -10,7 +10,6 @@ if (!isset($_SESSION['carrito'])) {
 $id_usuario_logueado = null;
 if (isset($_SESSION['usuario'])) {
     $nombre_usuario = $_SESSION['usuario'];
-    // Consulta sin preparar
     $consulta_usuario = "SELECT id FROM usuarios WHERE usuario = '$nombre_usuario' LIMIT 1";
     $resultado_usuario = mysqli_query($conexion, $consulta_usuario);
     if ($fila = mysqli_fetch_assoc($resultado_usuario)) {
@@ -18,7 +17,7 @@ if (isset($_SESSION['usuario'])) {
     }
 }
 
-$id_usuario = $id_usuario_logueado; // Para consistencia
+$id_usuario = $id_usuario_logueado;
 
 // Aumentar o disminuir cantidad
 if (
@@ -93,7 +92,16 @@ if ($id_usuario) {
     if (mysqli_num_rows($resultado_carrito_activo) > 0) {
         $id_carrito = mysqli_fetch_assoc($resultado_carrito_activo)['id'];
 
-        $sql_productos = "SELECT dc.id_producto, dc.cantidad, dc.precio_unitario, dc.tipo_producto, p.*, v.* FROM detalle_carrito dc LEFT JOIN productos p ON (dc.tipo_producto = 'producto' AND dc.id_producto = p.id) LEFT JOIN pasaje v ON (dc.tipo_producto = 'vuelo' AND dc.id_producto = v.id) WHERE dc.id_carrito = $id_carrito";
+        $sql_productos = "SELECT dc.id_producto, dc.cantidad, dc.precio_unitario, dc.tipo_producto, 
+                                 p.nombre AS nombre_producto, 
+                                 v.lugar_de_llegada, v.duracion AS duracion_vuelo, 
+                                 a.nombre AS nombre_alojamiento, a.duracion AS duracion_alojamiento 
+                          FROM detalle_carrito dc 
+                          LEFT JOIN productos p ON (dc.tipo_producto = 'producto' AND dc.id_producto = p.id) 
+                          LEFT JOIN pasaje v ON (dc.tipo_producto = 'vuelo' AND dc.id_producto = v.id) 
+                          LEFT JOIN alojamiento a ON (dc.tipo_producto = 'alojamiento' AND dc.id_producto = a.id) 
+                          WHERE dc.id_carrito = $id_carrito";
+
         $resultado_productos = mysqli_query($conexion, $sql_productos);
         $productos = mysqli_fetch_all($resultado_productos, MYSQLI_ASSOC);
 
@@ -105,7 +113,19 @@ if ($id_usuario) {
     $carrito_sesion = $_SESSION['carrito'];
     if (!empty($carrito_sesion)) {
         $ids = implode(",", array_map('intval', array_keys($carrito_sesion)));
-        $sql = "SELECT p.id AS id_producto, p.precio AS precio_producto, v.*, 'producto' AS tipo_producto FROM productos p LEFT JOIN pasaje v ON p.id_viaje = v.id WHERE p.id IN ($ids)";
+        $sql = "
+            SELECT p.id AS id_producto, p.precio AS precio_producto, p.nombre, 'producto' AS tipo_producto, NULL AS lugar_de_llegada, NULL AS duracion
+            FROM productos p
+            WHERE p.id IN ($ids)
+            UNION
+            SELECT v.id AS id_producto, v.precio AS precio_producto, NULL AS nombre, 'vuelo' AS tipo_producto, v.lugar_de_llegada, v.duracion
+            FROM pasaje v
+            WHERE v.id IN ($ids)
+            UNION
+            SELECT a.id AS id_producto, a.precio AS precio_producto, a.nombre, 'alojamiento' AS tipo_producto, NULL AS lugar_de_llegada, a.duracion
+            FROM alojamiento a
+            WHERE a.id IN ($ids)
+        ";
         $resultado = mysqli_query($conexion, $sql);
         $productos_sesion = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
 
@@ -118,8 +138,56 @@ if ($id_usuario) {
         }
     }
 }
-?>
 
+// Procesar compra
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comprar']) && $id_usuario) {
+    $consulta_carrito = "SELECT id FROM carrito WHERE id_usuario = $id_usuario AND estado = 'activo' LIMIT 1";
+    $resultado_carrito = mysqli_query($conexion, $consulta_carrito);
+
+    if ($resultado_carrito && mysqli_num_rows($resultado_carrito) > 0) {
+        $id_carrito = mysqli_fetch_assoc($resultado_carrito)['id'];
+
+        // Obtener los productos del carrito
+        $sql_detalle = "SELECT * FROM detalle_carrito WHERE id_carrito = $id_carrito";
+        $resultado_detalle = mysqli_query($conexion, $sql_detalle);
+
+        $productos_compra = mysqli_fetch_all($resultado_detalle, MYSQLI_ASSOC);
+
+        if (!empty($productos_compra)) {
+            // Calcular total
+            $total = 0;
+            foreach ($productos_compra as $item) {
+                $total += $item['precio_unitario'] * $item['cantidad'];
+            }
+
+            // Insertar en compras
+            $sql_compra = "INSERT INTO compras (id_usuario, total) VALUES ($id_usuario, $total)";
+            mysqli_query($conexion, $sql_compra);
+            $id_compra = mysqli_insert_id($conexion);
+
+            // Insertar detalles
+            foreach ($productos_compra as $item) {
+                $id_prod = $item['id_producto'];
+                $cant = $item['cantidad'];
+                $precio = $item['precio_unitario'];
+                $tipo = $item['tipo_producto'];
+
+                $sql_det = "INSERT INTO detalle_compra (id_compra, id_producto, tipo_producto, cantidad, precio_unitario)
+                            VALUES ($id_compra, $id_prod, '$tipo', $cant, $precio)";
+                mysqli_query($conexion, $sql_det);
+            }
+
+            // Marcar carrito como finalizado
+            mysqli_query($conexion, "UPDATE carrito SET estado = 'comprado' WHERE id = $id_carrito");
+
+            // Redirigir con mensaje
+            header("Location: carrito.php?comprado=1");
+            exit;
+        }
+    }
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -152,12 +220,16 @@ if ($id_usuario) {
                 <div>
                     <strong>
                         <?php 
-                        echo $item['tipo_producto'] === 'vuelo' 
-                            ? ($item['lugar_de_llegada'] ?? 'Vuelo') 
-                            : ($item['nombre'] ?? 'Producto');
+                        if ($item['tipo_producto'] === 'vuelo') {
+                            echo $item['lugar_de_llegada'] ?? 'Vuelo';
+                        } elseif ($item['tipo_producto'] === 'producto') {
+                            echo $item['nombre_producto'] ?? $item['nombre'] ?? 'Producto';
+                        } elseif ($item['tipo_producto'] === 'alojamiento') {
+                            echo $item['nombre_alojamiento'] ?? $item['nombre'] ?? 'Alojamiento';
+                        }
                         ?>
                     </strong><br>
-                    <?= $item['duracion'] ?? ''; ?><br>
+                    <?= $item['duracion_vuelo'] ?? $item['duracion_alojamiento'] ?? $item['duracion'] ?? ''; ?><br>
                     $<?= number_format($item['precio_unitario'], 2); ?> x <?= $item['cantidad']; ?>
                 </div>
 
@@ -182,6 +254,10 @@ if ($id_usuario) {
                 <input type="hidden" name="vaciar" value="1">
                 <button class="btn btn-vaciar">Vaciar carrito 🗑️</button>
             </form>
+        <form method="post" style="display:inline;">
+                <input type="hidden" name="comprar" value="1">
+                <button class="btn" style="background-color:#2ecc71; color:white;">Comprar ✅</button>
+        </form>
         </div>
     <?php endif; ?>
 </div>

@@ -19,28 +19,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $precio = $_POST['precio'];
     $calificacion = $_POST['calificacion'];
     $estrellas = $_POST['estrellas'];
-    $sql = "INSERT INTO pasaje (
-        lugar_de_salida, lugar_de_llegada, imagen, fecha_ida, fecha_vuelta,
-        duracion, metodo_de_transporte, paquete, PRECIO, calificacion, estrellas
-    ) VALUES (
-        '$lugar_salida', '$lugar_llegada', '$imagen', '$fecha_ida', '$fecha_vuelta',
-        '$duracion', '$transporte', '$paquete', '$precio', '$calificacion', '$estrellas'
-    )";
 
-    if (mysqli_query($conexion, $sql)) {
-    // Obtener el ID del vuelo recién insertado
-    $id_viaje = mysqli_insert_id($conexion);
+    // Primero insertamos en productos sin especificar el id_viaje
+    $sqlProductos = "INSERT INTO productos (nombre, precio) VALUES ('$lugar_salida', '$precio')";
 
-    // Insertar en productos con ese ID
+    if ( mysqli_query($conexion, $sqlProductos) ) {
+        // Obtenemos el id autoincrementado de productos
+        $id_producto = mysqli_insert_id($conexion);
 
-    $sql2 = "INSERT INTO productos (nombre, precio, id_viaje) VALUES ('$lugar_salida', '$precio', '$id_viaje')";
-    mysqli_query($conexion, $sql2);
+        // Después insertamos en pasaje utilizando el id del producto como PK
+        $sqlPasaje = "INSERT INTO pasaje (id, lugar_de_salida, lugar_de_llegada, imagen, fecha_ida, fecha_vuelta, duracion, metodo_de_transporte, paquete, PRECIO, calificacion, estrellas) 
+        VALUES ($id_producto, '$lugar_salida', '$lugar_llegada', '$imagen', '$fecha_ida', '$fecha_vuelta', '$duracion', '$transporte', '$paquete', '$precio', '$calificacion', '$estrellas')";
 
-    echo "<script>alert('Vuelo agregado correctamente'); window.location='vuelos.php';</script>";
-} else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conexion);
-}
+        if ( mysqli_query($conexion, $sqlPasaje) ) {
 
+            // Actualizamos el producto para que tenga el id_viaje
+            $update = "UPDATE productos SET id_viaje=$id_producto WHERE id=$id_producto";
+
+            if ( mysqli_query($conexion, $update) ) {
+                echo "<script>alert('Registro agregado correctamente'); window.location='vuelos.php'</script>";
+            } else {
+                echo "Error al guardar el producto: " . mysqli_error($conexion);
+            }
+
+        } else {
+            echo "Error al guardar el pasaje: " . mysqli_error($conexion);
+        }
+    } else {
+        echo "Error al guardar el producto: " . mysqli_error($conexion);
+    }
 }
 
 ?>
@@ -72,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <label>Fecha de vuelta</label>
     <input type="date" name="fecha_vuelta" required>
 
-    <label>Duración (ej: 13 días / 12 noches)</label>
+    <label>Duración (ej: 13 días / 2 noches)</label>
     <input type="text" name="duracion" required>
 
     <label>Método de transporte</label>
@@ -96,6 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
+
 <style>
     body {
         font-family: 'Segoe UI', sans-serif;
@@ -111,7 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         margin: auto;
         padding: 30px;
         border-radius: 12px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        box-shadow: 0 0 15px rgb(0,0,0,0.1);
     }
     label {
         display: block;
@@ -130,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         margin-top: 25px;
         padding: 12px;
         background-color: #3f0071;
-        color: white;
+        color: #fff;
         font-size: 16px;
         border: none;
         border-radius: 10px;

@@ -17,16 +17,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $calificacion = $_POST['calificacion'];
     $estrellas = $_POST['estrellas'];
 
-    $sql = "INSERT INTO autos (
-         imagen, nombre, capacidad, fecha_deposito, fecha_devolucion, precio, calificacion, estrellas
-    ) VALUES (
-        '$imagen', '$nombre', '$capacidad', '$fecha_deposito', '$fecha_devolucion', '$precio', '$calificacion', '$estrellas'
-    )";
+    // Primero insertamos en productos sin especificar el id
+    $sqlProductos = "INSERT INTO productos (nombre, precio) VALUES ('$nombre', '$precio')";
 
-    if (mysqli_query($conexion, $sql)) {
-        echo "<script>alert('vehiuculo agregado correctamente'); window.location='autos.php';</script>";
+    if ( mysqli_query($conexion, $sqlProductos) ) {
+        // Obtenemos el id autoincrementado de productos
+        $id_producto = mysqli_insert_id($conexion);
+
+        // Después insertamos en autos utilizando el id del producto
+        $sqlAutos = "INSERT INTO autos (id, nombre, imagen, capacidad, fecha_deposito, fecha_devolucion, precio, calificacion, estrellas) 
+        VALUES ($id_producto, '$nombre', '$imagen', '$capacidad', '$fecha_deposito', '$fecha_devolucion', '$precio', '$calificacion', '$estrellas')";
+
+        if ( mysqli_query($conexion, $sqlAutos) ) {
+
+            // Actualizamos el producto para que tenga el id_auto
+            $update = "UPDATE productos SET id_autos=$id_producto WHERE id=$id_producto";
+
+            if ( mysqli_query($conexion, $update) ) {
+                echo "<script>alert('Registro agregado correctamente'); window.location='autos.php'</script>";
+            } else {
+                echo "Error al guardar el producto: " . mysqli_error($conexion);
+            }
+
+        } else {
+            echo "Error al guardar el coche: " . mysqli_error($conexion);
+        }
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conexion);
+        echo "Error al guardar el producto: " . mysqli_error($conexion);
     }
 }
 
@@ -36,30 +53,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Agregar vehiculos</title>
+    <title>Agregar nuevo coche</title>
 </head>
 <body>
 
-<h2 style="text-align:center; color:#3f0071;">Agregar nuevo vehiculo</h2>
+<h2 style="text-align:center; color:#3f0071;">Agregar nuevo coche</h2>
 
-<form method="POST" action="">
+<form method="POST" action="">    
 
     <label>Nombre</label>
     <input type="text" name="nombre" required>
 
-    <label>URL de imagen</label>
+    <label>URL de Imagen</label>
     <input type="text" name="imagen" required>
 
-    <label>capacidad (ej: 2, 4 o mas personas)</label>
+    <label>Capacidad (ej: 2, 4 o más)</label>
     <input type="text" name="capacidad" required>
 
-    <label>Fecha del deposito del vehiculo</label>
+    <label>Fecha de depósito</label>
     <input type="date" name="fecha_deposito" required>
 
-    <label>Fecha de devolucion del vehiculo</label>
+    <label>Fecha de devolución</label>
     <input type="date" name="fecha_devolucion" required>
 
-    <label>Precio el dia</label>
+    <label>Precio por Día</label>
     <input type="text" name="precio" required>
 
     <label>Calificación (ej: 4.3)</label>
@@ -68,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <label>Estrellas (ej: 3)</label>
     <input type="number" min="1" max="5" name="estrellas" required>
 
-    <button type="submit">Agregar vehiculo</button>
+    <button type="submit">Agregar Coche</button>
 </form>
 
 
@@ -90,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         margin: auto;
         padding: 30px;
         border-radius: 12px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        box-shadow: 0 0 15px rgb(0,0,0,0.1);
     }
     label {
         display: block;
@@ -109,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         margin-top: 25px;
         padding: 12px;
         background-color: #3f0071;
-        color: white;
+        color: #fff;
         font-size: 16px;
         border: none;
         border-radius: 10px;
