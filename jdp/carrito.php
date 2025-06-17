@@ -138,6 +138,55 @@ if ($id_usuario) {
         }
     }
 }
+
+// Procesar compra
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comprar']) && $id_usuario) {
+    $consulta_carrito = "SELECT id FROM carrito WHERE id_usuario = $id_usuario AND estado = 'activo' LIMIT 1";
+    $resultado_carrito = mysqli_query($conexion, $consulta_carrito);
+
+    if ($resultado_carrito && mysqli_num_rows($resultado_carrito) > 0) {
+        $id_carrito = mysqli_fetch_assoc($resultado_carrito)['id'];
+
+        // Obtener los productos del carrito
+        $sql_detalle = "SELECT * FROM detalle_carrito WHERE id_carrito = $id_carrito";
+        $resultado_detalle = mysqli_query($conexion, $sql_detalle);
+
+        $productos_compra = mysqli_fetch_all($resultado_detalle, MYSQLI_ASSOC);
+
+        if (!empty($productos_compra)) {
+            // Calcular total
+            $total = 0;
+            foreach ($productos_compra as $item) {
+                $total += $item['precio_unitario'] * $item['cantidad'];
+            }
+
+            // Insertar en compras
+            $sql_compra = "INSERT INTO compras (id_usuario, total) VALUES ($id_usuario, $total)";
+            mysqli_query($conexion, $sql_compra);
+            $id_compra = mysqli_insert_id($conexion);
+
+            // Insertar detalles
+            foreach ($productos_compra as $item) {
+                $id_prod = $item['id_producto'];
+                $cant = $item['cantidad'];
+                $precio = $item['precio_unitario'];
+                $tipo = $item['tipo_producto'];
+
+                $sql_det = "INSERT INTO detalle_compra (id_compra, id_producto, tipo_producto, cantidad, precio_unitario)
+                            VALUES ($id_compra, $id_prod, '$tipo', $cant, $precio)";
+                mysqli_query($conexion, $sql_det);
+            }
+
+            // Marcar carrito como finalizado
+            mysqli_query($conexion, "UPDATE carrito SET estado = 'comprado' WHERE id = $id_carrito");
+
+            // Redirigir con mensaje
+            header("Location: carrito.php?comprado=1");
+            exit;
+        }
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -205,6 +254,10 @@ if ($id_usuario) {
                 <input type="hidden" name="vaciar" value="1">
                 <button class="btn btn-vaciar">Vaciar carrito 🗑️</button>
             </form>
+        <form method="post" style="display:inline;">
+                <input type="hidden" name="comprar" value="1">
+                <button class="btn" style="background-color:#2ecc71; color:white;">Comprar ✅</button>
+        </form>
         </div>
     <?php endif; ?>
 </div>
