@@ -21,18 +21,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $calificacion = $_POST['calificacion'];
     $estrellas = $_POST['estrellas'];
 
-    $sql = "INSERT INTO alojamiento (
-        nombre, imagen, mapalink, direccion, duracion, fecha_ingreso,
-        fecha_salida, capacidad, seguro, precio, calificacion, estrellas
-    ) VALUES (
-        '$nombre', '$imagen', '$mapalink', '$direccion', '$duracion', '$fecha_ingreso',
-        '$fecha_salida', '$capacidad', '$seguro', '$precio', '$calificacion', '$estrellas'
-    )";
+    // Primero insertamos en productos sin especificar el id
+    $sqlProductos = "INSERT INTO productos (nombre, precio) VALUES ('$nombre', '$precio')";
 
-    if (mysqli_query($conexion, $sql)) {
-        echo "<script>alert('alojamiento agregado correctamente'); window.location='alojamientos.php';</script>";
+    if ( mysqli_query($conexion, $sqlProductos) ) {
+        // Obtenemos el id autoincrementado de productos
+        $id_producto = mysqli_insert_id($conexion);
+
+        // Después insertamos en alojamiento utilizando el id del producto
+        $sqlAlojamientos = "INSERT INTO alojamiento (id, nombre, imagen, mapalink, direccion, duracion, fecha_ingreso, fecha_salida, capacidad, seguro, precio, calificacion, estrellas) 
+        VALUES ($id_producto, '$nombre', '$imagen', '$mapalink', '$direccion', '$duracion', '$fecha_ingreso', '$fecha_salida', '$capacidad', '$seguro', '$precio', '$calificacion', '$estrellas')";
+
+        if ( mysqli_query($conexion, $sqlAlojamientos) ) {
+
+            // Actualizamos el producto para que tenga el id_alojamientos
+            $update = "UPDATE productos SET id_alojamiento=$id_producto WHERE id=$id_producto";
+
+            if ( mysqli_query($conexion, $update) ) {
+                echo "<script>alert('Registro agregado correctamente'); window.location='alojamientos.php'</script>";
+            } else {
+                echo "Error al guardar el producto: " . mysqli_error($conexion);
+            }
+
+        } else {
+            echo "Error al guardar el alojamiento: " . mysqli_error($conexion);
+        }
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conexion);
+        echo "Error al guardar el producto: " . mysqli_error($conexion);
     }
 }
 
@@ -43,37 +58,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Agregar alojamiento</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <h2 style="text-align:center; color:#3f0071;">Agregar nuevo alojamiento</h2>
 
 <form method="POST" action="">
-    <label>nombre</label>
+    <label>Nombre</label>
     <input type="text" name="nombre" required>
 
     <label>URL de imagen</label>
     <input type="text" name="imagen" required>
 
-    <label>link mapa</label>
+    <label>Link del mapa</label>
     <input type="text" name="mapalink" required>
 
-    <label>direccion</label>
+    <label>Dirección</label>
     <input type="text" name="direccion" required>
 
     <label>Duración (ej: 13 días / 12 noches)</label>
     <input type="text" name="duracion" required>
 
-    <label>fecha ingreso</label>
+    <label>Fecha de ingreso</label>
     <input type="date" name="fecha_ingreso" required>
 
-    <label>fecha_salida</label>
+    <label>Fecha de salida</label>
     <input type="date" name="fecha_salida" required>
 
-    <label>capacidad (ej:individual, 2 personas, 4 personas)</label>
+    <label>Capacidad (ej: 2, 4, 6)</label>
     <input type="text" name="capacidad" required>
 
-    <label>seguro</label>
+    <label>Seguro</label>
     <input type="text" name="seguro" required>
 
     <label>Precio</label>
@@ -85,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <label>Estrellas (ej: 3)</label>
     <input type="number" min="1" max="5" name="estrellas" required>
 
-    <button type="submit">Agregar alojamieto</button>
+    <button type="submit">Agregar Alojamiento</button>
 </form>
 
 
@@ -107,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         margin: auto;
         padding: 30px;
         border-radius: 12px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        box-shadow: 0 0 15px rgb(0,0,0,0.1);
     }
     label {
         display: block;
@@ -126,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         margin-top: 25px;
         padding: 12px;
         background-color: #3f0071;
-        color: white;
+        color: #fff;
         font-size: 16px;
         border: none;
         border-radius: 10px;
