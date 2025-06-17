@@ -1,20 +1,5 @@
-  .ubicacion {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 10px 20px;
-  background: linear-gradient(135deg, #3f0071, #5e17eb);
-  color: white;
-  text-decoration: none;
-  border-radius: 10px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(63, 0, 113, 0.3);
-}
-
-.ubicacion:hover {
-  background: linear-gradient(135deg, #5e17eb, #7a32ff);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(63, 0, 113, 0.5);
+body {
+  background-color: yellow;
 }
 
 .btn-eliminar {
@@ -48,128 +33,97 @@
   background-color: #0056b3;
 }
 
-  .btn-eliminar {
-  margin-top: 10px;
-  padding: 6px 12px;
-  background-color: #dc3545;
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin: 40px auto;
+  max-width: 1200px;
+}
+
+.card {
+  width: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+  background-color: white;
+}
+
+.card-img img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.duration {
+  bottom: 8px;
+  left: 8px;
+  background-color: rgba(0, 0, 0, 0.7);
   color: white;
-  border: none;
+  font-size: 12px;
+  padding: 4px 8px;
   border-radius: 6px;
-  cursor: pointer;
+  display: inline-block;
+}
+
+.card-content {
+  padding: 16px;
+}
+
+.package-label {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.destination {
+  font-size: 18px;
+  margin: 4px 0;
+  color: #333;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.score {
+  background-color: #2ecc71;
+  color: white;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
-.btn-eliminar:hover {
-  background-color: #b02a37;
+.stars {
+  color: #f39c12;
+  font-size: 14px;
 }
 
-  .btn-agregar-auto {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
+.departure {
+  font-size: 14px;
+  color: #444;
+  margin: 2px 0;
+}
 
-  .btn-agregar-auto:hover {
-    background-color: #0056b3;
-  }
+.price-section {
+  margin: 12px 0;
+}
 
-  .cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin: 40px auto;
-    max-width: 1200px;
-  }
+.price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #222;
+}
 
-  .card {
-    width: 320px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', sans-serif;
-    background-color: white;
-  }
-
-  .card-img img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-  }
-
-  .duration {
-    bottom: 8px;
-    left: 8px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    display: inline-block;
-  }
-
-  .card-content {
-    padding: 16px;
-  }
-
-  .package-label {
-    font-size: 12px;
-    color: #777;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .destination {
-    font-size: 18px;
-    margin: 4px 0;
-    color: #333;
-  }
-
-  .rating {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin: 8px 0;
-  }
-
-  .score {
-    background-color: #2ecc71;
-    color: white;
-    font-weight: bold;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-
-  .stars {
-    color: #f39c12;
-    font-size: 14px;
-  }
-
-  .departure {
-    font-size: 14px;
-    color: #444;
-    margin: 2px 0;
-  }
-
-  .price-section {
-    margin: 12px 0;
-  }
-
-  .price {
-    font-size: 20px;
-    font-weight: bold;
-    color: #222;
-  }
-
-  .navbar {
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -221,6 +175,86 @@
 .cart {
   position: relative;
 }
+
+.boton-carrito {
+  background-color: #3f0071;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.boton-carrito:hover {
+  background-color: #5e17eb;
+  transform: scale(1.05);
+}
+
+body {
+  font-family: Arial;
+  background: #f7f7f7;
+  padding: 30px;
+}
+
+.carrito-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: auto;
+}
+
+.producto-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding: 15px 0;
+}
+
+.acciones {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-eliminar {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-vaciar {
+  background-color: #999;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.total {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: right;
+  margin-top: 15px;
+}
+
+.volver {
+  display: block;
+  margin-top: 25px;
+  text-align: center;
+  color: #333;
+  text-decoration: none;
+}
 .btn-modificar {
   margin-top: 6px;
   padding: 6px 12px;
@@ -270,3 +304,19 @@
 .btn-modificar:hover {
   background-color: #e0a800;
 }
+.btn-modificar {
+  margin-top: 6px;
+  padding: 6px 12px;
+  background-color: #ffc107;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-modificar:hover {
+  background-color: #e0a800;
+}
+

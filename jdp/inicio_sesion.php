@@ -22,12 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($resultado && mysqli_num_rows($resultado) > 0) {
         $registro = mysqli_fetch_assoc($resultado);
 
-        if (password_verify($contraseñaing, $registro['contraseña'])) {
+         if (password_verify($contraseñaing, $registro['contraseña'])) {
             $_SESSION['usuario'] = $registro['usuario'];
-            $_SESSION['rol'] = $registro['rol']; // Guardamos el rol en sesión
+            $_SESSION['rol'] = $registro['rol'];
+            $_SESSION['id_usuario'] = $registro['id']; // ✅ ¡GUARDA EL ID EN SESIÓN!
             header("Location: index.php");
-            exit;
-        } else {
+        exit;
+        }
+            else {
             echo "❌ Contraseña incorrecta.";
         }
     } else {

@@ -97,6 +97,15 @@ $listaDatos = mysqli_fetch_all($lista, MYSQLI_ASSOC);
         <a href="alojamientos.php" class="nav-item active"><i class="fas fa-hotel"></i>Alojamientos</a>
         <a href="paquetes.php" class="nav-item"><i class="fas fa-suitcase-rolling"></i>Paquetes</a>
         <a href="autos.php" class="nav-item"><i class="fas fa-car"></i>Autos</a>
+        <?php
+  if (isset($_SESSION['rol'])) {
+    if ($_SESSION['rol'] === 'admin') {
+      echo '<a href="detalles_ventas.php" class="nav-item"><i class="fas fa-chart-line"></i> Ventas</a>';
+    } elseif ($_SESSION['rol'] === 'cliente') {
+      echo '<a href="mis_compras.php" class="nav-item"><i class="fas fa-receipt"></i> Mis Compras</a>';
+    }
+  }
+?>
       </div>
       <div class="navbar-right">
         <?php if (isset($_SESSION['usuario'])): ?>
@@ -155,7 +164,7 @@ $listaDatos = mysqli_fetch_all($lista, MYSQLI_ASSOC);
               <!-- Botón de modificar solo para admin -->
               <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
                 <form action="modificacion_alojamiento.php" method="get" style="margin-top: 5px;">
-                  <input type="hidden" name="id_autos" value="<?php echo $autos['id']; ?>">
+                  <input type="hidden" name="id_alojamiento" value="<?php echo $alojamiento['id']; ?>">
                   <input type="submit" value="Modificar alojamiento✏️" class="btn-modificar">
                 </form>
               <?php endif; ?>

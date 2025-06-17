@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-06-2025 a las 23:34:40
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Tiempo de generación: 17-06-2025 a las 20:58:40
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -31,7 +31,6 @@ CREATE TABLE `alojamiento` (
   `id` int(10) NOT NULL,
   `nombre` varchar(30) NOT NULL,
   `imagen` varchar(255) DEFAULT NULL,
-  `mapalink` varchar(255) DEFAULT NULL,
   `direccion` varchar(50) DEFAULT NULL,
   `fecha_ingreso` date DEFAULT NULL,
   `fecha_salida` date DEFAULT NULL,
@@ -40,15 +39,17 @@ CREATE TABLE `alojamiento` (
   `precio` decimal(10,0) DEFAULT NULL,
   `duracion` varchar(30) NOT NULL,
   `calificacion` int(5) NOT NULL,
-  `estrellas` int(5) NOT NULL
+  `estrellas` int(5) NOT NULL,
+  `mapalink` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Volcado de datos para la tabla `alojamiento`
 --
 
-INSERT INTO `alojamiento` (`id`, `nombre`, `imagen`, `direccion`, `fecha_ingreso`, `fecha_salida`, `capacidad`, `seguro`, `precio`, `duracion`, `calificacion`, `estrellas`) VALUES
-(1, 'las 3 leches', 'https://la100.cienradios.com.ar/resizer/v2/LWXNF4KGEZA3BOFP7NZTPJ6TWU.jpg?auth=5c51dafa95045f443b706596accb4e8b0c7813f444477e521be6a4419b96fcb3&width=800&height=400', 'Chubut 1285', '2025-06-14', '2050-06-14', 'individual', 0, 1, '25 años/ 12noches', 5, 5);
+INSERT INTO `alojamiento` (`id`, `nombre`, `imagen`, `direccion`, `fecha_ingreso`, `fecha_salida`, `capacidad`, `seguro`, `precio`, `duracion`, `calificacion`, `estrellas`, `mapalink`) VALUES
+(1, 'las 5 leches', 'https://la100.cienradios.com.ar/resizer/v2/LWXNF4KGEZA3BOFP7NZTPJ6TWU.jpg?auth=5c51dafa95045f443b706596accb4e8b0c7813f444477e521be6a4419b96fcb3&width=800&height=400', 'Chubut 1285', '2025-06-14', '2050-06-14', 'individual', 0, 1, '25 años/ 12noches', 5, 5, 'no'),
+(17, 'porno 2', 'xd seo', 'calle siempreviva 1826', '2025-06-18', '2025-06-25', '2 personas', 30000, 300000, '13 dias/ 12 noches', 5, 5, 'colombia');
 
 -- --------------------------------------------------------
 
@@ -58,15 +59,23 @@ INSERT INTO `alojamiento` (`id`, `nombre`, `imagen`, `direccion`, `fecha_ingreso
 
 CREATE TABLE `autos` (
   `id` int(10) NOT NULL,
-  `nombre` varchar(100) DEFAULT NULL,
+  `nombre` varchar(30) NOT NULL,
   `imagen` varchar(255) DEFAULT NULL,
-  `capacidad` enum('2 personas','4 personas','+5 personas') DEFAULT NULL,
   `fecha_deposito` date DEFAULT NULL,
   `fecha_devolucion` date DEFAULT NULL,
+  `precio` decimal(10,2) DEFAULT NULL,
   `calificacion` float DEFAULT NULL,
   `estrellas` int(11) DEFAULT NULL,
-  `precio` decimal(10,2) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci
+  `capacidad` enum('2 personas','4 personas','+5 personas','') DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `autos`
+--
+
+INSERT INTO `autos` (`id`, `nombre`, `imagen`, `fecha_deposito`, `fecha_devolucion`, `precio`, `calificacion`, `estrellas`, `capacidad`) VALUES
+(14, 'auto 555', 'sexo', '2025-06-18', '2025-06-25', 1000000.00, 4, 5, '2 personas');
+
 -- --------------------------------------------------------
 
 --
@@ -85,8 +94,25 @@ CREATE TABLE `carrito` (
 --
 
 INSERT INTO `carrito` (`id`, `id_usuario`, `fecha_creacion`, `estado`) VALUES
-(1, 6, '2025-06-14 16:52:51', 'activo'),
-(2, 4, '2025-06-15 18:09:15', 'activo');
+(1, 6, '2025-06-14 16:52:51', 'comprado'),
+(2, 4, '2025-06-15 18:09:15', 'comprado'),
+(3, 7, '2025-06-15 19:14:12', 'comprado'),
+(4, 4, '2025-06-15 19:37:30', 'comprado'),
+(5, 4, '2025-06-15 19:38:43', 'comprado'),
+(6, 4, '2025-06-15 19:39:40', 'comprado'),
+(7, 4, '2025-06-15 19:40:17', 'comprado'),
+(8, 4, '2025-06-15 19:54:52', 'comprado'),
+(9, 8, '2025-06-15 20:17:49', 'comprado'),
+(10, 8, '2025-06-15 20:21:55', 'comprado'),
+(11, 7, '2025-06-16 15:29:31', 'comprado'),
+(12, 7, '2025-06-16 15:49:06', 'comprado'),
+(13, 4, '2025-06-16 15:51:15', 'comprado'),
+(14, 7, '2025-06-16 15:51:53', 'comprado'),
+(15, 4, '2025-06-17 09:45:36', 'comprado'),
+(16, 7, '2025-06-17 12:10:57', 'comprado'),
+(17, 7, '2025-06-17 12:12:38', 'comprado'),
+(18, 4, '2025-06-17 12:13:55', 'activo'),
+(19, 7, '2025-06-17 12:20:13', 'comprado');
 
 -- --------------------------------------------------------
 
@@ -116,7 +142,35 @@ INSERT INTO `clientes` (`dni`, `nombre_y_apellido`, `fecha_de_nacimiento`, `sexo
 (1111111, '111', '2000-05-12', 'Masculino', 'mateomoyano@gmail.com', 2147483647, 'Argentina', 'Cordoba', 'Montevideo', 'alcachofas333', 4),
 (47825536, 'mateo moyano', '2000-05-12', 'Masculino', 'mateomoyano@gmail.com', 2147483647, 'Argentina', 'Cordoba', 'Montevideo', 'alcachofas333', 3),
 (47825537, 'mateo moyano', '2007-12-12', 'Masculino', 'mateomoyano@gmail.com', 2147483647, 'Argentina', 'Cordoba', 'Montevideo', 'alcachofas333', 0),
-(47825539, 'Pepito Hernandez', '1212-12-12', 'Masculino', 'pepito@gmail.com', 2147483647, 'Argentina', 'cordoba', 'Santa Fe', 'San luis 25', 6);
+(47825539, 'Pepito Hernandez', '1212-12-12', 'Masculino', 'pepito@gmail.com', 2147483647, 'Argentina', 'cordoba', 'Santa Fe', 'San luis 25', 6),
+(49323669, 'agustin hartemann', '2009-02-11', 'Masculino', 'fvpijnepifjvrnewpifuvner@gmail.com', 89, 'Peru', 'Santa Fe', 'frontera', 'asdada', 8),
+(2147483647, 'Elias M', '2025-07-05', 'Masculino', 'qadadasd@asdasdas', 2147483647, 'Peru', 'Santa Fe', 'frontera', 'asdada', 7);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `compras`
+--
+
+CREATE TABLE `compras` (
+  `id` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `fecha` datetime DEFAULT current_timestamp(),
+  `total` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `compras`
+--
+
+INSERT INTO `compras` (`id`, `id_usuario`, `fecha`, `total`) VALUES
+(12, 4, '2025-06-16 15:51:18', 600.00),
+(13, 7, '2025-06-16 15:51:55', 600.00),
+(14, 4, '2025-06-17 09:45:40', 1200.00),
+(15, 6, '2025-06-17 11:24:35', 1200600.00),
+(16, 7, '2025-06-17 12:10:59', 0.00),
+(17, 7, '2025-06-17 12:12:50', 1200.00),
+(18, 7, '2025-06-17 12:20:18', 300000.00);
 
 -- --------------------------------------------------------
 
@@ -139,27 +193,87 @@ CREATE TABLE `detalle_carrito` (
 
 INSERT INTO `detalle_carrito` (`id`, `id_carrito`, `id_producto`, `tipo_producto`, `cantidad`, `precio_unitario`) VALUES
 (10, 1, 8, 'vuelo', 4, 300000.00),
-(11, 2, 8, 'vuelo', 2, 300000.00);
+(17, 2, 9, 'vuelo', 1, 100.00),
+(18, 4, 9, 'vuelo', 4, 100.00),
+(19, 4, 10, 'vuelo', 3, 100000.00),
+(20, 5, 9, 'vuelo', 1, 100.00),
+(21, 6, 9, 'vuelo', 1, 100.00),
+(23, 7, 9, 'vuelo', 2, 100.00),
+(24, 8, 9, 'vuelo', 3, 100.00),
+(25, 9, 9, 'vuelo', 1, 100.00),
+(26, 10, 9, 'vuelo', 8, 100.00),
+(27, 3, 9, 'vuelo', 1, 100.00),
+(28, 11, 11, 'vuelo', 1, 600.00),
+(29, 12, 12, 'vuelo', 1, 1.85),
+(30, 13, 13, 'vuelo', 1, 600.00),
+(31, 14, 13, 'vuelo', 1, 600.00),
+(32, 15, 13, 'vuelo', 2, 600.00),
+(33, 1, 13, 'vuelo', 1, 600.00),
+(34, 16, 1, 'alojamiento', 2, 0.00),
+(35, 17, 13, 'vuelo', 2, 600.00),
+(36, 18, 13, 'vuelo', 3, 600.00),
+(37, 19, 15, 'vuelo', 1, 300000.00);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `paquete`
+-- Estructura de tabla para la tabla `detalle_compra`
 --
 
-CREATE TABLE `paquete` (
+CREATE TABLE `detalle_compra` (
+  `id` int(11) NOT NULL,
+  `id_compra` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `tipo_producto` enum('producto','vuelo') NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `precio_unitario` decimal(10,2) NOT NULL,
+  `estado` enum('en proceso','aceptado','rechazado') DEFAULT 'en proceso'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalle_compra`
+--
+
+INSERT INTO `detalle_compra` (`id`, `id_compra`, `id_producto`, `tipo_producto`, `cantidad`, `precio_unitario`, `estado`) VALUES
+(13, 12, 10, 'vuelo', 1, 600.00, 'aceptado'),
+(14, 13, 13, 'vuelo', 1, 600.00, 'aceptado'),
+(15, 14, 13, 'vuelo', 2, 600.00, 'rechazado'),
+(16, 15, 8, 'vuelo', 4, 300000.00, 'aceptado'),
+(17, 15, 13, 'vuelo', 1, 600.00, 'aceptado'),
+(18, 16, 1, '', 2, 0.00, 'aceptado'),
+(19, 17, 13, 'vuelo', 2, 600.00, 'rechazado'),
+(20, 18, 15, 'vuelo', 1, 300000.00, 'rechazado');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `paquetes`
+--
+
+CREATE TABLE `paquetes` (
   `id` int(10) NOT NULL,
-  `nombre` varchar(30) NOT NULL,
-  `lugar_de_salida` varchar(100) DEFAULT NULL,
-  `lugar_de_llegada` varchar(100) DEFAULT NULL,
-  `imagen` varchar(255) DEFAULT NULL,
-  `fecha_ida` date DEFAULT NULL,
-  `fecha_vuelta` date DEFAULT NULL,
-  `direccion` varchar(50) DEFAULT NULL,
-  `fecha_ingreso` date DEFAULT NULL,
-  `fecha_salida` date DEFAULT NULL,
-  `paquete` enum('individual','grupal','familiar') DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `nombre` varchar(100) NOT NULL,
+  `lugar_de_salida` varchar(100) NOT NULL,
+  `lugar_de_llegada` varchar(100) NOT NULL,
+  `imagen` varchar(255) NOT NULL,
+  `fecha_ida` date NOT NULL,
+  `fecha_vuelta` date NOT NULL,
+  `direccion` varchar(50) NOT NULL,
+  `fecha_ingreso` date NOT NULL,
+  `fecha_salida` date NOT NULL,
+  `paquete` enum('individual','grupal','familiar') DEFAULT NULL,
+  `calificacion` float NOT NULL,
+  `estrellas` int(11) NOT NULL,
+  `precio` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `paquetes`
+--
+
+INSERT INTO `paquetes` (`id`, `nombre`, `lugar_de_salida`, `lugar_de_llegada`, `imagen`, `fecha_ida`, `fecha_vuelta`, `direccion`, `fecha_ingreso`, `fecha_salida`, `paquete`, `calificacion`, `estrellas`, `precio`) VALUES
+(1, 'porno', 'peru', 'paupue annobon', 'knlaslnkca', '2025-06-04', '2025-07-03', 'tetolandia 666', '2025-06-17', '2025-06-27', 'grupal', 2, 3, 1000000.00),
+(2, 'viaje a colombia', 'buenos aries, argentina', 'colobia ecuador,', 'aaaa', '2025-06-18', '2025-06-25', 'critina presa 666', '2025-06-18', '2025-07-01', 'individual', 1, 2, 202020.00);
 
 -- --------------------------------------------------------
 
@@ -169,6 +283,7 @@ CREATE TABLE `paquete` (
 
 CREATE TABLE `pasaje` (
   `id` int(10) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
   `lugar_de_salida` varchar(100) DEFAULT NULL,
   `lugar_de_llegada` varchar(100) DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
@@ -186,8 +301,10 @@ CREATE TABLE `pasaje` (
 -- Volcado de datos para la tabla `pasaje`
 --
 
-INSERT INTO `pasaje` (`id`, `lugar_de_salida`, `lugar_de_llegada`, `imagen`, `fecha_ida`, `fecha_vuelta`, `metodo_de_transporte`, `paquete`, `PRECIO`, `duracion`, `calificacion`, `estrellas`) VALUES
-(8, 'chile', 'Madrid', 'https://lh3.googleusercontent.com/gps-cs-s/AC9h4nr3c2vPWvAbyQ-NXg4YA96c0ObhBtOSJVOkN9zTzsBnw8AMVdTt4c0iLgJJ-Zc4e1FB-HxfDLoXKn4QZE2sgIL1-XIKyRy1dmvqHNl9VzHPg1OKckumF6DR56wlrxxd4WcycY7eKQ=w540-h312-n-k-no', '1212-12-12', '1212-12-12', 'avion', 'individual', 300000.00, '1 día/ 0 noches', 3, 3);
+INSERT INTO `pasaje` (`id`, `nombre`, `lugar_de_salida`, `lugar_de_llegada`, `imagen`, `fecha_ida`, `fecha_vuelta`, `metodo_de_transporte`, `paquete`, `PRECIO`, `duracion`, `calificacion`, `estrellas`) VALUES
+(13, 'Viaje a Yemen', 'sao paoblo Brasil', 'yemen', 'https://fotos.perfil.com/2016/04/01/trim/1280/720/presa.jpg', '2025-06-04', '2025-06-21', 'avion', 'familia', 600.00, '13 dias / 11 noches', 4, 4),
+(15, NULL, 'Buenos Aires', 'Madrid', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRp1Ibqi5VFmJWaLoxHpesa23Kvy3RzlqfULw&s', '2025-06-19', '2025-06-23', 'avion', 'familia', 300000.00, '4 días/ 3 noches', 2, 2),
+(16, NULL, 'Antartida', 'Peru', 'https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSGOvYRx1GIm21vEw2vIwxA0Dz9zvSiMHkPribzTjR3hPgEwLaHAE-e1W1Pb6vBQn2KmJUBlEwm9xi69YyhR5VPK_RI7kSSqIqHLlg2pw', '2025-06-29', '2025-06-30', 'avion', '', 7000000.00, '1 dia/ 0 noches', 4, 4);
 
 -- --------------------------------------------------------
 
@@ -210,9 +327,15 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `nombre`, `precio`, `id_viaje`, `id_alojamiento`, `id_paquetes`, `id_autos`) VALUES
-(4, 'oclahoma', 450000.00, 7, NULL, NULL, NULL),
-(3, 'oclahoma', 300000.00, 6, NULL, NULL, NULL),
-(5, 'chile', 300000.00, 8, NULL, NULL, NULL);
+(10, 'Viaje a Yemen', 600.00, 13, NULL, NULL, NULL),
+(11, 'papua neva guiena', 1000000.00, NULL, NULL, NULL, NULL),
+(12, 'auto', 4000.00, NULL, NULL, NULL, NULL),
+(13, 'auto', 1000000.00, NULL, NULL, NULL, NULL),
+(14, 'auto', 1000000.00, NULL, NULL, NULL, 14),
+(15, 'Buenos Aires', 300000.00, 15, NULL, NULL, NULL),
+(16, 'Antartida', 7000000.00, 16, NULL, NULL, NULL),
+(17, 'porno 2', 300000.00, NULL, 17, NULL, NULL),
+(18, 'viaje a colombia', 202020.00, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -237,21 +360,9 @@ INSERT INTO `usuarios` (`id`, `usuario`, `contraseña`, `rol`) VALUES
 (3, 'putita333', '$2y$10$DWy8SHH5bd7sHWlqQhrM2ui', 'cliente'),
 (4, '111', '$2y$10$4fJC0h.Gy7h7NomTmaypN.oMQ6jvXxv7JLg/ZBXDpKcPWK618rDUG', 'admin'),
 (5, 'pirulito', '$2y$10$xvw287ghIONHl88ux1hreeFbnRfANDALwpazsLttykbNK1NRJr8dq', 'cliente'),
-(6, 'pirulito123', '$2y$10$jw5l8bhCk9XfWcIuQFi.cuOBgMFCxbf3JvN9ZCz6upkE5KpFxi8SG', 'cliente');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `ventas`
---
-
-CREATE TABLE `ventas` (
-  `id` int(10) NOT NULL,
-  `id_cliente` int(10) NOT NULL,
-  `nombre_producto` varchar(100) DEFAULT NULL,
-  `fecha_venta` date DEFAULT NULL,
-  `precio_total` int(20) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+(6, 'pirulito123', '$2y$10$jw5l8bhCk9XfWcIuQFi.cuOBgMFCxbf3JvN9ZCz6upkE5KpFxi8SG', 'cliente'),
+(7, '222', '$2y$10$whBOJMNxEMkarSAldkL86eUTqF/aELtuE8P.WeM0gHKZKpJ3EpiZm', 'cliente'),
+(8, 'Aguh', '$2y$10$/XUTsey62o.ZNBgnvf02BeFvaQ3Es2xOL1FXcFgB8txZ4iENuOxjy', 'cliente');
 
 --
 -- Índices para tablas volcadas
@@ -283,6 +394,13 @@ ALTER TABLE `clientes`
   ADD UNIQUE KEY `id_usuario` (`id_usuario`);
 
 --
+-- Indices de la tabla `compras`
+--
+ALTER TABLE `compras`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_usuario` (`id_usuario`);
+
+--
 -- Indices de la tabla `detalle_carrito`
 --
 ALTER TABLE `detalle_carrito`
@@ -290,9 +408,16 @@ ALTER TABLE `detalle_carrito`
   ADD KEY `id_carrito` (`id_carrito`);
 
 --
--- Indices de la tabla `paquete`
+-- Indices de la tabla `detalle_compra`
 --
-ALTER TABLE `paquete`
+ALTER TABLE `detalle_compra`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_compra` (`id_compra`);
+
+--
+-- Indices de la tabla `paquetes`
+--
+ALTER TABLE `paquetes`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -318,13 +443,6 @@ ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `ventas`
---
-ALTER TABLE `ventas`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_cliente` (`id_cliente`);
-
---
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -332,65 +450,83 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `alojamiento`
 --
 ALTER TABLE `alojamiento`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `autos`
 --
 ALTER TABLE `autos`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `carrito`
 --
 ALTER TABLE `carrito`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT de la tabla `compras`
+--
+ALTER TABLE `compras`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_carrito`
 --
 ALTER TABLE `detalle_carrito`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
--- AUTO_INCREMENT de la tabla `paquete`
+-- AUTO_INCREMENT de la tabla `detalle_compra`
 --
-ALTER TABLE `paquete`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `detalle_compra`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT de la tabla `paquetes`
+--
+ALTER TABLE `paquetes`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `pasaje`
 --
 ALTER TABLE `pasaje`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT de la tabla `ventas`
---
-ALTER TABLE `ventas`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas
 --
 
 --
+-- Filtros para la tabla `compras`
+--
+ALTER TABLE `compras`
+  ADD CONSTRAINT `compras_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`);
+
+--
 -- Filtros para la tabla `detalle_carrito`
 --
 ALTER TABLE `detalle_carrito`
   ADD CONSTRAINT `detalle_carrito_ibfk_1` FOREIGN KEY (`id_carrito`) REFERENCES `carrito` (`id`);
+
+--
+-- Filtros para la tabla `detalle_compra`
+--
+ALTER TABLE `detalle_compra`
+  ADD CONSTRAINT `detalle_compra_ibfk_1` FOREIGN KEY (`id_compra`) REFERENCES `compras` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

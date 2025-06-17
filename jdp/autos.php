@@ -66,6 +66,15 @@ $listaDatos = mysqli_fetch_all($listaautos, MYSQLI_ASSOC);
         <a href="alojamientos.php" class="nav-item"><i class="fas fa-hotel"></i>Alojamientos</a>
         <a href="paquetes.php" class="nav-item"><i class="fas fa-suitcase-rolling"></i>Paquetes</a>
         <a href="autos.php" class="nav-item active"><i class="fas fa-car"></i>Autos</a>
+        <?php
+  if (isset($_SESSION['rol'])) {
+    if ($_SESSION['rol'] === 'admin') {
+      echo '<a href="detalles_ventas.php" class="nav-item"><i class="fas fa-chart-line"></i> Ventas</a>';
+    } elseif ($_SESSION['rol'] === 'cliente') {
+      echo '<a href="mis_compras.php" class="nav-item"><i class="fas fa-receipt"></i> Mis Compras</a>';
+    }
+  }
+?>
       </div>
 
       <div class="navbar-right">

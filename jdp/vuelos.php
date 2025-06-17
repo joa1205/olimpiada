@@ -117,6 +117,15 @@ $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
         <a href="alojamientos.php" class="nav-item"><i class="fas fa-hotel"></i>Alojamientos</a>
         <a href="paquetes.php" class="nav-item"><i class="fas fa-suitcase-rolling"></i>Paquetes</a>
         <a href="autos.php" class="nav-item"><i class="fas fa-car"></i>Autos</a>
+        <?php
+  if (isset($_SESSION['rol'])) {
+    if ($_SESSION['rol'] === 'admin') {
+      echo '<a href="detalles_ventas.php" class="nav-item"><i class="fas fa-chart-line"></i> Ventas</a>';
+    } elseif ($_SESSION['rol'] === 'cliente') {
+      echo '<a href="mis_compras.php" class="nav-item"><i class="fas fa-receipt"></i> Mis Compras</a>';
+    }
+  }
+?>
       </div>
 
       <!-- Login/logout y carrito -->
@@ -177,13 +186,10 @@ $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
 
             <!-- Botón eliminar vuelo (solo admin) -->
             <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
-              <!-- Botón de modificar solo para admin -->
-              <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
                 <form action="modificacion_vuelos.php" method="get" style="margin-top: 5px;">
-                  <input type="hidden" name="id_autos" value="<?php echo $autos['id']; ?>">
+                  <input type="hidden" name="id_vuelo" value="<?php echo $vuelos['id']; ?>">
                   <input type="submit" value="Modificar vuelo✏️" class="btn-modificar">
                 </form>
-              <?php endif; ?>
               <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este vuelo?');">
                 <input type="hidden" name="eliminar_vuelo_id" value="<?php echo $vuelos['id']; ?>">
                 <input type="submit" value="Eliminar vuelo 🗑️" class="btn-eliminar">
