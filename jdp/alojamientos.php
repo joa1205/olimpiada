@@ -138,7 +138,7 @@ $listaDatos = mysqli_fetch_all($lista, MYSQLI_ASSOC);
               ?>
             </span>
           </div>
-          <a href="<?php echo $alojamientos['mapalink']; ?>" class="ubicacion" target="_blank">
+          <a href="<?php echo $alojamiento['mapalink']; ?>" class="ubicacion" target="_blank">
             Ver en Google Maps 📍
           </a>
           <p class="departure">Dirección: <?php echo $alojamiento['direccion']; ?> - Capacidad:

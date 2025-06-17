@@ -108,10 +108,10 @@ $listaDatos = mysqli_fetch_all($listaautos, MYSQLI_ASSOC);
             </span>
           </div>
           <div class="price-section">
-            <p class="price"><?php echo $autos['precio']; ?></p>
+            <p class="price">$<?php echo $autos['precio']; ?></p>
             <form method="post">
               <input type="hidden" name="id_autos" value="<?php echo $autos['id']; ?>">
-              <input type="submit" value="Añadir al carrito" name="añadir">
+              <input type="submit" class="boton-carrito" value="Añadir al carrito" name="añadir">
             </form>
           </div>
           <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
@@ -300,4 +300,23 @@ $listaDatos = mysqli_fetch_all($listaautos, MYSQLI_ASSOC);
   .btn-modificar:hover {
     background-color: #e0a800;
   }
+  .boton-carrito {
+  display: inline-block;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #3f0071, #5e17eb);
+  color: white;
+  text-decoration: none;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(63, 0, 113, 0.3);
+}
+
+.boton-carrito:hover {
+  background: linear-gradient(135deg, #5e17eb, #7a32ff);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(63, 0, 113, 0.5);
+}
 </style>
