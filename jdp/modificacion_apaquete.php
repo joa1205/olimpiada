@@ -95,15 +95,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="date" name="fecha_salida" value="<?php echo $paquetes['fecha_salida']; ?>" required>
 
     <label>Paquete(individual, grupal, familiar)</label>
-        <select name="paquete">
-    <option value="<?php echo $paquetes['paquete']; ?>"><?php echo $paquetes['paquete']; ?></option>
-    <?php if ($paquetes['paquete'] !=='individual'): ?>
-    <option value="individual">individual</option><?php endif;?>
-    <?php if ($paquetes['paquete'] !=='grupal'): ?>
-    <option value="grupal">grupal</option><?php endif;?>
-    <?php if ($paquetes['paquete'] !=='familiar'): ?>
-    <option value="familiar">familiar</option><?php endif;?>
+    <select name="paquete">
+    <option value="individual" <?php if ($paquetes['paquete'] =='individual'):?>selected<?php endif?> >individual</option>
+    <option value="grupal"     <?php if ($paquetes['paquete'] =='grupal'):?>selected <?php endif ?>>grupal</option>
+    <option value="familiar"  <?php if ($paquetes['paquete'] =='familiar'):?>selected <?php endif ?>>familiar</option>
     </select>
+
 
     <label>Precio</label>
     <input type="text" name="precio" value="<?php echo $paquetes['precio']; ?>" required>

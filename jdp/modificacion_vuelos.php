@@ -83,25 +83,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <label>Método de transporte</label>
     <select name="transporte">
-    <option value="<?php echo $vuelo['metodo_de_transporte']; ?>"><?php echo $vuelo['metodo_de_transporte']; ?></option>
-    <?php if ($vuelo['metodo_de_transporte'] !=='avion'): ?>
-    <option value="avion">avion</option><?php endif;?>
-    <?php if ($vuelo['metodo_de_transporte'] !=='barco'): ?>
-    <option value="barco">barco</option><?php endif;?>
-    <?php if ($vuelo['metodo_de_transporte'] !=='colectivo'): ?>
-    <option value="colectivo">colectivo</option><?php endif;?>
+    <option value="avion" <?php if ($vuelo['metodo_de_transporte'] =='avion'):?>selected<?php endif?> >avion</option>
+    <option value="barco"     <?php if ($vuelo['metodo_de_transporte'] =='barco'):?>selected <?php endif ?>>barco</option>
+    <option value="colectivo"  <?php if ($vuelo['metodo_de_transporte'] =='colectivo'):?>selected <?php endif ?>>colectivo</option>
     </select>
 
 
     <label>Paquete</label>
     <select name="paquete">
-    <option value="<?php echo $vuelo['paquete']; ?>"><?php echo $vuelo['paquete']; ?></option>
-    <?php if ($vuelo['paquete'] !=='individual'): ?>
-    <option value="individual">individual</option><?php endif;?>
-    <?php if ($vuelo['paquete'] !=='grupo'): ?>
-    <option value="grupo">grupal</option><?php endif;?>
-    <?php if ($vuelo['paquete'] !=='familia'): ?>
-    <option value="familia">familiar</option><?php endif;?>
+    <option value="individual" <?php if ($vuelo['paquete'] =='individual'):?>selected<?php endif?> >individual</option>
+    <option value="grupo"     <?php if ($vuelo['paquete'] =='grupo'):?>selected <?php endif ?>>grupal</option>
+    <option value="familia"  <?php if ($vuelo['paquete'] =='familia'):?>selected <?php endif ?>>familiar</option>
     </select>
 
     <label>Precio</label>

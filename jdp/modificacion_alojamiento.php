@@ -75,13 +75,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <label>Capacidad</label>
     <select name="capacidad">
-    <option value="<?php echo $alojamiento['capacidad']; ?>"><?php echo $alojamiento['capacidad']; ?></option>
-    <?php if ($alojamiento['capacidad'] !=='individual'): ?>
-    <option value="individual">individual</option><?php endif;?>
-    <?php if ($alojamiento['capacidad'] !=='2 personas'): ?>
-    <option value="2 personas">2 personas</option><?php endif;?>
-    <?php if ($alojamiento['capacidad'] !=='4 personas'): ?>
-    <option value="4 personas">4 personas</option><?php endif;?>
+    <option value="individual" <?php if ($alojamiento['capacidad'] =='individual'):?>selected<?php endif?> >individual</option>
+    <option value="2 personas"     <?php if ($alojamiento['capacidad'] =='2 personas'):?>selected <?php endif ?>>2 personas</option>
+    <option value="4 personas"  <?php if ($alojamiento['capacidad'] =='4 personas'):?>selected <?php endif ?>>4 personas</option>
     </select>
 
     <label>Duracion</label>

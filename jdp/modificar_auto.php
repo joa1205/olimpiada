@@ -62,13 +62,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <label>capacidad</label>
     <select name="capacidad">
-    <option value="<?php echo $autos['capacidad']; ?>"><?php echo $autos['capacidad']; ?></option>
-    <?php if ($autos['capacidad'] !=='2 personas'): ?>
-    <option value="2 personas">2 personas</option><?php endif;?>
-    <?php if ($autos['capacidad'] !=='4 personas'): ?>
-    <option value="4 personas">4 personas</option><?php endif;?>
-    <?php if ($autos['capacidad'] !=='+5 personas'): ?>
-    <option value="+5 personas">+5 personas</option><?php endif;?>
+    <option value="2 personas" <?php if ($autos['capacidad'] =='2 personas'):?>selected<?php endif?> >2 personas</option>
+    <option value="4 personas"     <?php if ($autos['capacidad'] =='4 personas'):?>selected <?php endif ?>>4 personas</option>
+    <option value="+5 personas"  <?php if ($autos['capacidad'] =='+5 personas'):?>selected <?php endif ?>>+5 personas</option>
     </select>
 
     <label>Precio</label>
