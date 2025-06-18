@@ -6,11 +6,9 @@ if (!isset($_SESSION['carrito'])) {
     $_SESSION['carrito'] = [];
 }
 
-// Obtener ID de usuario si está logueado
 $id_usuario_logueado = null;
 if (isset($_SESSION['usuario'])) {
     $nombre_usuario = $_SESSION['usuario'];
-    // Consulta sin preparar
     $consulta_usuario = "SELECT id FROM usuarios WHERE usuario = '$nombre_usuario' LIMIT 1";
     $resultado_usuario = mysqli_query($conexion, $consulta_usuario);
     if ($fila = mysqli_fetch_assoc($resultado_usuario)) {
@@ -18,9 +16,8 @@ if (isset($_SESSION['usuario'])) {
     }
 }
 
-$id_usuario = $id_usuario_logueado; // Para consistencia
+$id_usuario = $id_usuario_logueado;
 
-// Aumentar o disminuir cantidad
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
     isset($_POST['modificar_cantidad'], $_POST['producto_id'], $_POST['accion'])
@@ -33,7 +30,6 @@ if (
         $resultado_carrito = mysqli_query($conexion, $consulta_carrito);
         if (mysqli_num_rows($resultado_carrito) > 0) {
             $id_carrito_activo = mysqli_fetch_assoc($resultado_carrito)['id'];
-
             if ($accion === 'sumar') {
                 $conexion->query("UPDATE detalle_carrito SET cantidad = cantidad + 1 WHERE id_carrito = $id_carrito_activo AND id_producto = $producto_id");
             } elseif ($accion === 'restar') {
@@ -54,7 +50,6 @@ if (
     exit;
 }
 
-// Eliminar producto
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
     $id_producto_eliminar = intval($_POST['eliminar']);
 
@@ -69,7 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
     exit;
 }
 
-// Vaciar carrito
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['vaciar'])) {
     if ($id_usuario) {
         $sql_vaciar = "DELETE dc FROM detalle_carrito dc JOIN carrito c ON dc.id_carrito = c.id WHERE c.id_usuario = $id_usuario AND c.estado = 'activo'";
@@ -85,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['vaciar'])) {
 $productos = [];
 $total = 0;
 
-// Obtener productos
 if ($id_usuario) {
     $consulta_carrito_activo = "SELECT c.id FROM carrito c WHERE c.id_usuario = $id_usuario AND c.estado = 'activo' LIMIT 1";
     $resultado_carrito_activo = mysqli_query($conexion, $consulta_carrito_activo);
@@ -118,55 +111,6 @@ if ($id_usuario) {
         }
     }
 }
-
-// Procesar compra
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comprar']) && $id_usuario) {
-    $consulta_carrito = "SELECT id FROM carrito WHERE id_usuario = $id_usuario AND estado = 'activo' LIMIT 1";
-    $resultado_carrito = mysqli_query($conexion, $consulta_carrito);
-
-    if ($resultado_carrito && mysqli_num_rows($resultado_carrito) > 0) {
-        $id_carrito = mysqli_fetch_assoc($resultado_carrito)['id'];
-
-        // Obtener los productos del carrito
-        $sql_detalle = "SELECT * FROM detalle_carrito WHERE id_carrito = $id_carrito";
-        $resultado_detalle = mysqli_query($conexion, $sql_detalle);
-
-        $productos_compra = mysqli_fetch_all($resultado_detalle, MYSQLI_ASSOC);
-
-        if (!empty($productos_compra)) {
-            // Calcular total
-            $total = 0;
-            foreach ($productos_compra as $item) {
-                $total += $item['precio_unitario'] * $item['cantidad'];
-            }
-
-            // Insertar en compras
-            $sql_compra = "INSERT INTO compras (id_usuario, total) VALUES ($id_usuario, $total)";
-            mysqli_query($conexion, $sql_compra);
-            $id_compra = mysqli_insert_id($conexion);
-
-            // Insertar detalles
-            foreach ($productos_compra as $item) {
-                $id_prod = $item['id_producto'];
-                $cant = $item['cantidad'];
-                $precio = $item['precio_unitario'];
-                $tipo = $item['tipo_producto'];
-
-                $sql_det = "INSERT INTO detalle_compra (id_compra, id_producto, tipo_producto, cantidad, precio_unitario)
-                            VALUES ($id_compra, $id_prod, '$tipo', $cant, $precio)";
-                mysqli_query($conexion, $sql_det);
-            }
-
-            // Marcar carrito como finalizado
-            mysqli_query($conexion, "UPDATE carrito SET estado = 'comprado' WHERE id = $id_carrito");
-
-            // Redirigir con mensaje
-            header("Location: carrito.php?comprado=1");
-            exit;
-        }
-    }
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -233,10 +177,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comprar']) && $id_usu
                 <input type="hidden" name="vaciar" value="1">
                 <button class="btn btn-vaciar">Vaciar carrito 🗑️</button>
             </form>
-        <form method="post" style="display:inline;">
-                <input type="hidden" name="comprar" value="1">
-                <button class="btn" style="background-color:#2ecc71; color:white;">Comprar ✅</button>
-        </form>
+
+            <a href="pagar.php" class="btn" style="background-color:#2ecc71; color:white; text-decoration:none;">Pagar ✅</a>
         </div>
     <?php endif; ?>
 </div>

@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['añadir']) && isset($
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_auto_id'])) {
   if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
     $idEliminar = intval($_POST['eliminar_auto_id']);
+    mysqli_query($conexion, "DELETE FROM productos WHERE id = $idEliminar");
     $sqlEliminar = "DELETE FROM autos WHERE id = $idEliminar";
     mysqli_query($conexion, $sqlEliminar);
   }

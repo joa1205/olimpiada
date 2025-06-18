@@ -79,6 +79,7 @@ if ($id_usuario) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id'])) {
   if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
     $idEliminar = intval($_POST['eliminar_vuelo_id']);
+    mysqli_query($conexion, "DELETE FROM productos WHERE id = $idEliminar");
     mysqli_query($conexion, "DELETE FROM paquetes WHERE id = $idEliminar");
   }
 }
