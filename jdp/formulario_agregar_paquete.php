@@ -21,30 +21,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $precio = $_POST['precio'];
     $calificacion = $_POST['calificacion'];
     $estrellas = $_POST['estrellas'];
-    $sql = "INSERT INTO paquetes (
-        nombre, lugar_salida, lugar_llegada, imagen, fecha_ida, fecha_vuelta,
-        direccion, fecha_ingreso, fecha_salida, paquete, precio, calificacion, estrellas
-    ) VALUES (
-        '$nombre', '$lugar_salida', '$lugar_llegada', '$imagen', '$fecha_ida', '$fecha_vuelta',
-        '$direccion', '$fecha_ingreso','$fecha_salida', '$paquete', '$precio', '$calificacion', '$estrellas'
-    )";
 
-    if (mysqli_query($conexion, $sql)) {
-    // Obtener el ID del vuelo recién insertado
-    $id_paquetes = mysqli_insert_id($conexion);
+    // Primero insertamos en productos sin especificar el id_viaje
+    $sqlProductos = "INSERT INTO productos (nombre, precio) VALUES ('$nombre', '$precio')";
+      
+    if ( mysqli_query($conexion, $sqlProductos) ) {
+        // Obtenemos el id autoincrementado de productos
+        $id_producto = mysqli_insert_id($conexion);
 
-    // Insertar en productos con ese ID
+            // Después insertamos en pasaje utilizando el id del producto como PK
+        $sqlpaquete = "INSERT INTO paquetes (id, nombre, lugar_de_salida, lugar_de_llegada, imagen, fecha_ida, fecha_vuelta,direccion, fecha_ingreso, fecha_salida, paquete, precio, calificacion, estrellas) 
+        VALUES ($id_producto, '$nombre', '$lugar_salida', '$lugar_llegada', '$imagen', '$fecha_ida', '$fecha_vuelta','$direccion', '$fecha_ingreso','$fecha_salida', '$paquete', '$precio', '$calificacion', '$estrellas')";
 
-    $id_paquetes = mysqli_insert_id($conexion);
-    $sql2 = "INSERT INTO productos (nombre, precio, id) VALUES ('$nombre', '$precio', '$id')";
-    mysqli_query($conexion, $sql2);
+if ( mysqli_query($conexion, $sqlpaquete) ) {
 
+            // Actualizamos el producto para que tenga el id_viaje
+            $update = "UPDATE productos SET id_paquetes=$id_producto WHERE id=$id_producto";
 
-    echo "<script>alert('paquete agregado correctamente'); window.location='paquetes.php';</script>";
-} else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conexion);
-}
+            if ( mysqli_query($conexion, $update) ) {
+                echo "<script>alert('Registro agregado correctamente'); window.location='paquetes.php'</script>";
+            } else {
+                echo "Error al guardar el producto: " . mysqli_error($conexion);
+            }
 
+        } else {
+            echo "Error al guardar el pasaje: " . mysqli_error($conexion);
+        }
+    } else {
+        echo "Error al guardar el producto: " . mysqli_error($conexion);
+    }
 }
 
 ?>
@@ -89,8 +94,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <label>fecha de salida del hotel</label>
     <input type="date" name="fecha_salida" required>
 
-    <label>Paquete(individual, grupal, familiar)</label>
-    <input type="text" name="paquete" required>
+    <label>Paquete</label>
+    <select name="paquete" >
+        <option value="individual">individual</option>
+        <option value="grupal">grupal</option>
+        <option value="familiar">familiar</option>
+    </select>
 
     <label>Precio</label>
     <input type="text" name="precio" required>
@@ -151,4 +160,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     button:hover {
         background-color: #5b0cbf;
     }
+    select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 5px;
+    background-color: white;
+    font-family: inherit;
+    font-size: 14px;
+    appearance: none;       /* Quita el estilo nativo */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='gray' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658A.5.5 0 0 1 2.88 5h10.24a.5.5 0 0 1 .428.758l-4.796 5.482a.5.5 0 0 1-.752 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 40px; /* espacio para la flecha */
+}
 </style>

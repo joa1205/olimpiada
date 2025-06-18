@@ -67,8 +67,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <label>URL de Imagen</label>
     <input type="text" name="imagen" required>
 
-    <label>Capacidad (ej: 2, 4 o más)</label>
-    <input type="text" name="capacidad" required>
+    <label>Capacidad </label>
+    <select name="capacidad" >
+        <option value="2 personas">2 personas</option>
+        <option value="4 personas">4 personas</option>
+        <option value="+5 personas">+5 personas</option>
+    </select>
 
     <label>Fecha de depósito</label>
     <input type="date" name="fecha_deposito" required>
@@ -136,4 +140,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     button:hover {
         background-color: #5b0cbf;
     }
+    select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 5px;
+    background-color: white;
+    font-family: inherit;
+    font-size: 14px;
+    appearance: none;       /* Quita el estilo nativo */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='gray' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658A.5.5 0 0 1 2.88 5h10.24a.5.5 0 0 1 .428.758l-4.796 5.482a.5.5 0 0 1-.752 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 40px; /* espacio para la flecha */
+}
 </style>

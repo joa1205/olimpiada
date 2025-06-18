@@ -83,10 +83,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="text" name="duracion" required>
 
     <label>Método de transporte</label>
-    <input type="text" name="transporte" required>
+    <select type="text" name="transporte" >
+        <option value="avion">avion</option>
+        <option value="barco">barco</option>
+        <option value="colectivo">colectivo</option>
+    </select>
 
     <label>Paquete</label>
-    <input type="text" name="paquete" required>
+    <select type="text" name="paquete" >
+        <option value="individual">individual</option>
+        <option value="grupo">grupal</option>
+        <option value="familia">familiar</option>
+    </select>
 
     <label>Precio</label>
     <input type="text" name="precio" required>
@@ -148,4 +156,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     button:hover {
         background-color: #5b0cbf;
     }
+    select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 5px;
+    background-color: white;
+    font-family: inherit;
+    font-size: 14px;
+    appearance: none;       /* Quita el estilo nativo */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='gray' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658A.5.5 0 0 1 2.88 5h10.24a.5.5 0 0 1 .428.758l-4.796 5.482a.5.5 0 0 1-.752 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 40px; /* espacio para la flecha */
+}
 </style>

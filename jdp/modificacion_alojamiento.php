@@ -74,7 +74,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="text" name="mapalink" value="<?php echo $alojamiento['mapalink']; ?>" required>
 
     <label>Capacidad</label>
-    <input type="text" name="capacidad" value="<?php echo $alojamiento['capacidad']; ?>" required>
+    <select name="capacidad">
+    <option value="<?php echo $alojamiento['capacidad']; ?>"><?php echo $alojamiento['capacidad']; ?></option>
+    <?php if ($alojamiento['capacidad'] !=='individual'): ?>
+    <option value="individual">individual</option><?php endif;?>
+    <?php if ($alojamiento['capacidad'] !=='2 personas'): ?>
+    <option value="2 personas">2 personas</option><?php endif;?>
+    <?php if ($alojamiento['capacidad'] !=='4 personas'): ?>
+    <option value="4 personas">4 personas</option><?php endif;?>
+    </select>
+
+    <label>Duracion</label>
+    <input type="text" name="duracion" value="<?php echo $alojamiento['duracion']; ?>" required>
 
     <label>Dirección</label>
     <input type="text" name="direccion" value="<?php echo $alojamiento['direccion']; ?>" required>
@@ -146,4 +157,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     button:hover {
         background-color: #5b0cbf;
     }
+    select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 5px;
+    background-color: white;
+    font-family: inherit;
+    font-size: 14px;
+    appearance: none;       /* Quita el estilo nativo */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='gray' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658A.5.5 0 0 1 2.88 5h10.24a.5.5 0 0 1 .428.758l-4.796 5.482a.5.5 0 0 1-.752 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 40px; /* espacio para la flecha */
+}
 </style>

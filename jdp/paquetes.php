@@ -148,7 +148,7 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
         <div class="card-content">
           <p class="package-label">paquetes</p>
           <h2 class="nombre"><?php echo $paquetes['nombre']; ?></h2>
-          <h2 class="lugar_llegada"><?php echo $paquetes['lugar_llegada']; ?></h2>
+          <h2 class="lugar_llegada"><?php echo $paquetes['lugar_de_llegada']; ?></h2>
           <div class="direccion"><?php echo $paquetes['direccion']; ?></div>
           <div class="rating">
             <span class="score"><?php echo $paquetes['calificacion']; ?>/5</span>
@@ -160,7 +160,7 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
               ?>
             </span>
           </div>
-          <p class="departure">Saliendo desde <?php echo $paquetes['lugar_salida']; ?> el dia <?php echo $paquetes['fecha_ida']; ?></p>
+          <p class="departure">Saliendo desde <?php echo $paquetes['lugar_de_salida']; ?> el dia <?php echo $paquetes['fecha_ida']; ?></p>
           <div class="price-section">
             <p class="price">$<?php echo $paquetes['precio']; ?></p>
 
