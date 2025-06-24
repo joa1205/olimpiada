@@ -138,7 +138,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <input type="submit" value="Crear Cuenta">
         </form>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="index.php" class="btn-agregar-vuelo">← Volver al menú principal</a>
+            </div>
+
     </div>
+</body>
 <style>
         body {
             font-family: 'Segoe UI', sans-serif;

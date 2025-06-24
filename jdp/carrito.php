@@ -86,7 +86,22 @@ if ($id_usuario) {
     if (mysqli_num_rows($resultado_carrito_activo) > 0) {
         $id_carrito = mysqli_fetch_assoc($resultado_carrito_activo)['id'];
 
-        $sql_productos = "SELECT dc.id_producto, dc.cantidad, dc.precio_unitario, dc.tipo_producto, p.*, v.* FROM detalle_carrito dc LEFT JOIN productos p ON (dc.tipo_producto = 'producto' AND dc.id_producto = p.id) LEFT JOIN pasaje v ON (dc.tipo_producto = 'vuelo' AND dc.id_producto = v.id) WHERE dc.id_carrito = $id_carrito";
+        $sql_productos = "
+        SELECT 
+          dc.id_producto, dc.cantidad, dc.precio_unitario, dc.tipo_producto,
+          p.nombre AS nombre_producto, 
+          v.lugar_de_llegada, v.duracion AS duracion_vuelo,
+          a.nombre AS nombre_auto, a.fecha_deposito, a.fecha_devolucion,
+          al.nombre AS nombre_alojamiento, al.fecha_ingreso, al.fecha_salida,
+          pa.nombre AS nombre_paquete, pa.fecha_ida, pa.fecha_vuelta
+        FROM detalle_carrito dc
+        LEFT JOIN productos p ON dc.id_producto = p.id
+        LEFT JOIN pasaje v ON dc.tipo_producto = 'vuelo' AND p.id_viaje = v.id
+        LEFT JOIN autos a ON dc.tipo_producto = 'auto' AND p.id_autos = a.id
+        LEFT JOIN alojamiento al ON dc.tipo_producto = 'alojamiento' AND p.id_alojamiento = al.id
+        LEFT JOIN paquetes pa ON dc.tipo_producto = 'paquete' AND p.id_paquetes = pa.id
+        WHERE dc.id_carrito = $id_carrito";
+
         $resultado_productos = mysqli_query($conexion, $sql_productos);
         $productos = mysqli_fetch_all($resultado_productos, MYSQLI_ASSOC);
 
@@ -146,13 +161,36 @@ if ($id_usuario) {
             <div class="producto-item">
                 <div>
                     <strong>
-                        <?php 
-                        echo $item['tipo_producto'] === 'vuelo' 
-                            ? ($item['lugar_de_llegada'] ?? 'Vuelo') 
-                            : ($item['nombre'] ?? 'Producto');
-                        ?>
+                    <?php
+                    switch ($item['tipo_producto']) {
+                        case 'vuelo':
+                            echo $item['lugar_de_llegada'] ?? 'Vuelo';
+                            break;
+                        case 'auto':
+                            echo $item['nombre_auto'] ?? 'Auto';
+                            break;
+                        case 'alojamiento':
+                            echo $item['nombre_alojamiento'] ?? 'Alojamiento';
+                            break;
+                        case 'paquete':
+                            echo $item['nombre_paquete'] ?? 'Paquete';
+                            break;
+                        default:
+                            echo $item['nombre_producto'] ?? 'Producto';
+                    }
+                    ?>
                     </strong><br>
-                    <?= $item['duracion'] ?? ''; ?><br>
+                    <?php
+                    if (!empty($item['duracion_vuelo'])) {
+                        echo $item['duracion_vuelo'] . "<br>";
+                    } elseif (!empty($item['fecha_ingreso']) && !empty($item['fecha_salida'])) {
+                        echo "Del " . $item['fecha_ingreso'] . " al " . $item['fecha_salida'] . "<br>";
+                    } elseif (!empty($item['fecha_ida']) && !empty($item['fecha_vuelta'])) {
+                        echo "Del " . $item['fecha_ida'] . " al " . $item['fecha_vuelta'] . "<br>";
+                    } elseif (!empty($item['fecha_deposito']) && !empty($item['fecha_devolucion'])) {
+                        echo "Del " . $item['fecha_deposito'] . " al " . $item['fecha_devolucion'] . "<br>";
+                    }
+                    ?>
                     $<?= number_format($item['precio_unitario'], 2); ?> x <?= $item['cantidad']; ?>
                 </div>
 
@@ -182,8 +220,7 @@ if ($id_usuario) {
         </div>
     <?php endif; ?>
 </div>
-
-<a href="vuelos.php" class="volver">← Seguir comprando</a>
+<a href="index.php" class="volver">← Seguir comprando</a>
 
 </body>
 </html>

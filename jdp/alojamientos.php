@@ -88,6 +88,7 @@ $listaDatos = mysqli_fetch_all($lista, MYSQLI_ASSOC);
   <nav>
     <div class="navbar">
       <div class="navbar-left">
+        <img class="navbar-logo img" src="Logo3.png" alt="Logo" style="height: 70px;">
         <?php if (isset($_SESSION['usuario'])): ?>
           <span class="nav-item user-info"><i class="fas fa-user"></i> <?php echo $_SESSION['usuario']; ?></span>
         <?php endif; ?>

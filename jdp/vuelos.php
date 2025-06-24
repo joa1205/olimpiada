@@ -34,8 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_vuelo'])) {
     }
 
     // Obtener el precio del vuelo desde la tabla productos
-    $precio_query = mysqli_query($conexion, "SELECT precio FROM productos WHERE id_viaje = $id_vuelo");
+    $precio_query = mysqli_query($conexion, query: "SELECT precio FROM productos WHERE id_viaje = $id_vuelo");
     $precio_unitario = 0;
+    $nombre_query = mysqli_query(mysql: $conexion, query: "SELECT nombre FROM productos WHERE id_viaje = $id_vuelo"); 
+    $nombre_default= 0;
     if ($precio_row = mysqli_fetch_assoc($precio_query)) {
       $precio_unitario = floatval($precio_row['precio']);
     }
@@ -50,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_vuelo'])) {
       mysqli_query($conexion, "INSERT INTO detalle_carrito (id_carrito, id_producto, tipo_producto, cantidad, precio_unitario) VALUES ($id_carrito, $id_vuelo, 'vuelo', 1, $precio_unitario)");
     }
   } else {
-    // Si no está logueado, agregar o incrementar el vuelo en carrito de sesión
+    // Si no está logueado, aagregar o incrementar el vuelo en carrito de sesión
     if (isset($_SESSION['carrito'][$id_vuelo])) {
       $_SESSION['carrito'][$id_vuelo]++;
     } else {
@@ -106,6 +108,7 @@ $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
     <div class="navbar">
       <div class="navbar-left">
         <!-- Mostrar usuario logueado -->
+         <img class="navbar-logo img" src="Logo3.png" alt="Logo" style="height: 70px;">
         <?php if (isset($_SESSION['usuario'])): ?>
           <span class="nav-item user-info"><i class="fas fa-user"></i> <?php echo $_SESSION['usuario']; ?></span>
         <?php endif; ?>
@@ -160,6 +163,7 @@ $listaDatos = mysqli_fetch_all($listavuelos, MYSQLI_ASSOC);
         </div>
         <div class="card-content">
           <p class="package-label">VUELO</p>
+          <h2 class="nombre"><?php echo $vuelos['nombre']; ?></h2>
           <h2 class="destination"><?php echo $vuelos['lugar_de_llegada']; ?></h2>
           <div class="duration"><?php echo $vuelos['duracion']; ?></div>
           <div class="rating">

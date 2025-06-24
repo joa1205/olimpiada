@@ -111,8 +111,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <label>Estrellas (ej: 3)</label>
     <input type="number" min="1" max="5" name="estrellas" value="<?php echo $paquetes['estrellas']; ?>" required>
 
-    <button type="submit">Modificar Vuelo</button>
+    <button type="submit">Modificar paquete</button>
 </form>
+<button type="submit"><a href="paquetes.php">volver</a></button>
 </body>
 </html>
 

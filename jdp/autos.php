@@ -1,30 +1,78 @@
 <?php
-include 'conexion.php';
-session_start();
+include 'conexion.php';  // Incluye archivo para conexión a la base de datos
+session_start();         // Inicia la sesión para manejar variables de sesión
 
-// Inicializar el carrito si no existe
+// Inicializa el carrito en sesión si no existe (para usuarios no logueados)
 if (!isset($_SESSION['carrito'])) {
   $_SESSION['carrito'] = [];
 }
 
-// Añadir auto al carrito y productos
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['añadir']) && isset($_POST['id_autos'])) {
-  $id_auto = intval($_POST['id_autos']);
-
-  // Evita duplicados
-  if (!in_array($id_auto, $_SESSION['carrito'])) {
-    $_SESSION['carrito'][] = $id_auto;
-
-    $consulta = "SELECT nombre, precio FROM autos WHERE id = $id_auto";
-    $resultado = mysqli_query($conexion, $consulta);
-    $auto = mysqli_fetch_assoc($resultado);
-
-    $nombre = mysqli_real_escape_string($conexion, $auto['nombre']);
-    $precio = floatval($auto['precio']);
-
-    $insert = "INSERT INTO productos (nombre, precio, id_autos) VALUES ('$nombre', $precio, $id_auto)";
-    mysqli_query($conexion, $insert);
+// Obtener el ID del usuario si está logueado
+$id_usuario = null;
+if (isset($_SESSION['usuario'])) {
+  $usuario = $_SESSION['usuario'];
+  // Consulta para obtener el ID del usuario a partir del nombre de usuario en sesión
+  $res = mysqli_query($conexion, "SELECT id FROM usuarios WHERE usuario = '$usuario'");
+  if ($fila = mysqli_fetch_assoc($res)) {
+    $id_usuario = $fila['id'];
   }
+}
+
+// Proceso para agregar un auto al carrito cuando se recibe un POST con id_autos
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_autos'])) {
+  $id_autos = intval($_POST['id_autos']); // ID del vuelo recibido
+
+  if ($id_usuario) {
+    // Si usuario logueado, buscar carrito activo
+    $carrito_query = mysqli_query($conexion, "SELECT id FROM carrito WHERE id_usuario = $id_usuario AND estado = 'activo'");
+    if ($fila = mysqli_fetch_assoc($carrito_query)) {
+      $id_carrito = $fila['id'];  // carrito encontrado
+    } else {
+      // Si no hay carrito activo, crear uno nuevo
+      mysqli_query($conexion, "INSERT INTO carrito (id_usuario, estado) VALUES ($id_usuario, 'activo')");
+      $id_carrito = mysqli_insert_id($conexion);  // obtener ID del carrito nuevo
+    }
+
+    // Obtener el precio del vuelo desde la tabla productos
+    $precio_query = mysqli_query($conexion, "SELECT precio FROM productos WHERE id_autos = $id_autos");
+    $precio_unitario = 0;
+    if ($precio_row = mysqli_fetch_assoc($precio_query)) {
+      $precio_unitario = floatval($precio_row['precio']);
+    }
+
+    // Verificar si el autos ya está en el detalle del carrito
+    $detalle = mysqli_query($conexion, "SELECT * FROM detalle_carrito WHERE id_carrito = $id_carrito AND id_producto = $id_autos AND tipo_producto = 'auto' ");
+    if (mysqli_num_rows($detalle) > 0) {
+      // Si existe, aumentar la cantidad en 1
+      mysqli_query($conexion, "UPDATE detalle_carrito SET cantidad = cantidad + 1 WHERE id_carrito = $id_carrito AND id_producto = $id_autos AND tipo_producto = 'auto' ");
+    } else {
+      // Si no existe, insertar nuevo registro en detalle carrito
+      mysqli_query($conexion, "INSERT INTO detalle_carrito (id_carrito, id_producto, tipo_producto, cantidad, precio_unitario) VALUES ($id_carrito, $id_autos, 'auto', 1, $precio_unitario)");
+    }
+  } else {
+    // Si no está logueado, agregar o incrementar el vuelo en carrito de sesión
+    if (isset($_SESSION['carrito'][$id_autos])) {
+      $_SESSION['carrito'][$id_autos]++;
+    } else {
+      $_SESSION['carrito'][$id_autos] = 1;
+    }
+  }
+}
+
+// Calcular la cantidad total de productos en el carrito para mostrar contador
+$contador_carrito = 0;
+if ($id_usuario) {
+  // Sumar cantidades en detalle_carrito para el carrito activo del usuario
+  $q = "SELECT SUM(cantidad) AS total FROM detalle_carrito dc 
+        INNER JOIN carrito c ON c.id = dc.id_carrito
+        WHERE c.id_usuario = $id_usuario AND c.estado = 'activo'";
+  $res = mysqli_query($conexion, $q);
+  if ($fila = mysqli_fetch_assoc($res)) {
+    $contador_carrito = $fila['total'] ?? 0;
+  }
+} else {
+  // Para usuarios no logueados, sumar cantidades del carrito en sesión
+  $contador_carrito = array_sum($_SESSION['carrito']);
 }
 
 // Eliminar auto (admin)
@@ -54,6 +102,7 @@ $listaDatos = mysqli_fetch_all($listaautos, MYSQLI_ASSOC);
   <nav>
     <div class="navbar">
       <div class="navbar-left">
+        <img class="navbar-logo img" src="Logo3.png" alt="Logo" style="height: 70px;">
         <?php if (isset($_SESSION['usuario'])): ?>
           <span class="nav-item user-info">
             <i class="fas fa-user"></i> <?php echo htmlspecialchars($_SESSION['usuario']); ?>
@@ -85,16 +134,16 @@ $listaDatos = mysqli_fetch_all($listaautos, MYSQLI_ASSOC);
           <a href="inicio_sesion.php" class="nav-item"><i class="fas fa-right-to-bracket"></i>Iniciar sesión</a>
           <a href="crear_cuenta.php" class="nav-item"><i class="fas fa-user-plus"></i>Registrarse</a>
         <?php endif; ?>
-        <a href="carrito.php" class="nav-item cart">
-          <i class="fas fa-shopping-cart"></i>Carrito(<?php echo count($_SESSION['carrito']); ?>)
-        </a>
+                <!-- Contador carrito -->
+        <a href="carrito.php" class="nav-item cart"><i
+        class="fas fa-shopping-cart"></i>Carrito(<?php echo $contador_carrito; ?>)</a>
       </div>
     </div>
   </nav>
 
   <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
     <div style="text-align: center; margin: 20px;">
-      <a href="formulario_agregar_auto.php" class="btn-agregar-auto">Agregar nuevo vehiculo</a>
+      <a href="formulario_agregar_auto.php" class="btn-agregar-vuelo">Agregar nuevo vehiculo</a>
     </div>
   <?php endif; ?>
 
@@ -144,189 +193,5 @@ $listaDatos = mysqli_fetch_all($listaautos, MYSQLI_ASSOC);
 
 <!-- Estilos -->
 <style>
-  .btn-eliminar {
-    margin-top: 10px;
-    padding: 6px 12px;
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn-eliminar:hover {
-    background-color: #b02a37;
-  }
-
-  .btn-agregar-auto {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn-agregar-auto:hover {
-    background-color: #0056b3;
-  }
-
-  .cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin: 40px auto;
-    max-width: 1200px;
-  }
-
-  .card {
-    width: 320px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', sans-serif;
-    background-color: white;
-  }
-
-  .card-img img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-  }
-
-  .card-content {
-    padding: 16px;
-  }
-
-  .package-label {
-    font-size: 12px;
-    color: #777;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .rating {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin: 8px 0;
-  }
-
-  .score {
-    background-color: #2ecc71;
-    color: white;
-    font-weight: bold;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-
-  .stars {
-    color: #f39c12;
-    font-size: 14px;
-  }
-
-  .price-section {
-    margin: 12px 0;
-  }
-
-  .price {
-    font-size: 20px;
-    font-weight: bold;
-    color: #222;
-  }
-
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f8f8f8;
-    padding: 10px 30px;
-    border-bottom: 2px solid #ddd;
-    position: relative;
-  }
-
-  .navbar-left,
-  .navbar-right {
-    display: flex;
-    align-items: center;
-  }
-
-  .nav-links {
-    display: flex;
-    align-items: center;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .nav-item {
-    text-align: center;
-    margin: 0 10px;
-    color: #555;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.3s ease;
-  }
-
-  .nav-item i {
-    font-size: 20px;
-    display: block;
-    margin-bottom: 5px;
-  }
-
-  .nav-item:hover {
-    color: #3f0071;
-  }
-
-  .user-info {
-    font-weight: bold;
-    font-size: 18px;
-    color: #3f0071;
-  }
-
-  .cart {
-    position: relative;
-  }
-
-  .btn-modificar {
-    margin-top: 6px;
-    padding: 6px 12px;
-    background-color: #ffc107;
-    color: #333;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn-modificar:hover {
-    background-color: #e0a800;
-  }
-  .boton-carrito {
-  display: inline-block;
-  padding: 10px 20px;
-  background: linear-gradient(135deg, #3f0071, #5e17eb);
-  color: white;
-  text-decoration: none;
-  border: none;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(63, 0, 113, 0.3);
-}
-
-.boton-carrito:hover {
-  background: linear-gradient(135deg, #5e17eb, #7a32ff);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(63, 0, 113, 0.5);
-}
+  
 </style>

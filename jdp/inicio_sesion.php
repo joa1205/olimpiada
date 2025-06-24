@@ -62,6 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p style="color:red; text-align:center;"><?php echo $error; ?></p>
     <?php endif; ?>
 </form>
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="index.php">← Volver al menú principal</a>
+    </div>
 
 </body>
 </html>
@@ -121,4 +124,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     p {
         margin-top: 20px;
     }
+    
+    a {
+        margin-top: 25px;
+        padding: 12px;
+        background-color: #3f0071;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s ease;
+        width: 100%;
+    }
+
+    a:hover {
+        background-color: #5b0cbf;
+        }
 </style>

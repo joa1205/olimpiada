@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mapalink = '$mapalink',
         capacidad = '$capacidad',
         direccion = '$direccion',
+        duracion = '$duracion',
         fecha_ingreso = '$fecha_ingreso',
         fecha_salida = '$fecha_salida',
         seguro = '$seguro',
@@ -106,6 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <button type="submit">Modificar alojamiento</button>
 </form>
+ <button type="submit"><a href="alojamientos.php">volver</a></button>
 </body>
 </html>
 

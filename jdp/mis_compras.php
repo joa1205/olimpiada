@@ -48,6 +48,7 @@ $id_usuario = $_SESSION['id_usuario']; // Debes tener esto en la sesión cuando 
  <nav>
     <div class="navbar">
       <div class="navbar-left">
+        <img class="navbar-logo img" src="Logo3.png" alt="Logo" style="height: 70px;">
         <!-- Mostrar usuario logueado -->
         <?php if (isset($_SESSION['usuario'])): ?>
           <span class="nav-item user-info"><i class="fas fa-user"></i> <?php echo $_SESSION['usuario']; ?></span>

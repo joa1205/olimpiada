@@ -18,9 +18,9 @@ if (isset($_SESSION['usuario'])) {
   }
 }
 
-// Proceso para agregar un vuelo al carrito cuando se recibe un POST con id_paquetes
+// Proceso para agregar un paquete al carrito cuando se recibe un POST con id_paquetes
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_paquetes'])) {
-  $id_paquetes = intval($_POST['id_paquetes']); // ID del vuelo recibido
+  $id_paquetes = intval($_POST['id_paquetes']); // ID del paquete recibido
 
   if ($id_usuario) {
     // Si usuario logueado, buscar carrito activo
@@ -33,24 +33,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_paquetes'])) {
       $id_carrito = mysqli_insert_id($conexion);  // obtener ID del carrito nuevo
     }
 
-    // Obtener el precio del vuelo desde la tabla productos
+    // Obtener el precio del paquete desde la tabla productos
     $precio_query = mysqli_query($conexion, "SELECT precio FROM productos WHERE id_paquetes = $id_paquetes");
     $precio_unitario = 0;
     if ($precio_row = mysqli_fetch_assoc($precio_query)) {
       $precio_unitario = floatval($precio_row['precio']);
     }
 
-    // Verificar si el vuelo ya está en el detalle del carrito
-    $detalle = mysqli_query($conexion, "SELECT * FROM detalle_carrito WHERE id_carrito = $id_carrito AND id_producto = $id_paquetes AND tipo_producto = 'vuelo'");
+    // Verificar si el paquete ya está en el detalle del carrito
+    $detalle = mysqli_query($conexion, "SELECT * FROM detalle_carrito WHERE id_carrito = $id_carrito AND id_producto = $id_paquetes AND tipo_producto = 'paquete'");
     if (mysqli_num_rows($detalle) > 0) {
       // Si existe, aumentar la cantidad en 1
-      mysqli_query($conexion, "UPDATE detalle_carrito SET cantidad = cantidad + 1 WHERE id_carrito = $id_carrito AND id_producto = $id_paquetes AND tipo_producto = 'vuelo'");
+      mysqli_query($conexion, "UPDATE detalle_carrito SET cantidad = cantidad + 1 WHERE id_carrito = $id_carrito AND id_producto = $id_paquetes AND tipo_producto = 'paquete'");
     } else {
       // Si no existe, insertar nuevo registro en detalle carrito
-      mysqli_query($conexion, "INSERT INTO detalle_carrito (id_carrito, id_producto, tipo_producto, cantidad, precio_unitario) VALUES ($id_carrito, $id_paquetes, 'vuelo', 1, $precio_unitario)");
+      mysqli_query($conexion, "INSERT INTO detalle_carrito (id_carrito, id_producto, tipo_producto, cantidad, precio_unitario) VALUES ($id_carrito, $id_paquetes, 'paquete', 1, $precio_unitario)");
     }
   } else {
-    // Si no está logueado, agregar o incrementar el vuelo en carrito de sesión
+    // Si no está logueado, agregar o incrementar el paquete en carrito de sesión
     if (isset($_SESSION['carrito'][$s])) {
       $_SESSION['carrito'][$id_paquetes]++;
     } else {
@@ -75,16 +75,16 @@ if ($id_usuario) {
   $contador_carrito = array_sum($_SESSION['carrito']);
 }
 
-// Proceso para eliminar un vuelo (solo si es admin y se recibe POST con id a eliminar)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_vuelo_id'])) {
+// Proceso para eliminar un paquete (solo si es admin y se recibe POST con id a eliminar)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_paquetes_id'])) {
   if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin') {
-    $idEliminar = intval($_POST['eliminar_vuelo_id']);
+    $idEliminar = intval($_POST['eliminar_paquetes_id']);
     mysqli_query($conexion, "DELETE FROM productos WHERE id = $idEliminar");
     mysqli_query($conexion, "DELETE FROM paquetes WHERE id = $idEliminar");
   }
 }
-
-// Consulta para obtener todos los vuelos de la tabla paquetes
+//a
+// Consulta para obtener todos los paquetes de la tabla paquetes
 $sql = "SELECT * FROM paquetes";
 $listapaquetes = mysqli_query($conexion, $sql);
 $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
@@ -104,6 +104,7 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
     <div class="navbar">
       <div class="navbar-left">
         <!-- Mostrar usuario logueado -->
+         <img class="navbar-logo img" src="Logo3.png" alt="Logo" style="height: 70px;">
         <?php if (isset($_SESSION['usuario'])): ?>
           <span class="nav-item user-info"><i class="fas fa-user"></i> <?php echo $_SESSION['usuario']; ?></span>
         <?php endif; ?>
@@ -116,6 +117,15 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
         <a href="alojamientos.php" class="nav-item"><i class="fas fa-hotel"></i>Alojamientos</a>
         <a href="paquetes.php" class="nav-item"><i class="fas fa-suitcase-rolling"></i>Paquetes</a>
         <a href="autos.php" class="nav-item"><i class="fas fa-car"></i>Autos</a>
+        <?php
+          if (isset($_SESSION['rol'])) {
+            if ($_SESSION['rol'] === 'admin') {
+              echo '<a href="detalles_ventas.php" class="nav-item"><i class="fas fa-chart-line"></i> Ventas</a>';
+            } elseif ($_SESSION['rol'] === 'cliente') {
+              echo '<a href="mis_compras.php" class="nav-item"><i class="fas fa-receipt"></i> Mis Compras</a>';
+            }
+          }
+        ?>
       </div>
 
       <!-- Login/logout y carrito -->
@@ -132,14 +142,14 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
     </div>
   </nav>
 
-  <!-- Botón para que admin agregue vuelo -->
+  <!-- Botón para que admin agregue paquetes -->
   <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
     <div style="text-align: center; margin: 20px;">
       <a href="formulario_agregar_paquete.php" class="btn-agregar-vuelo">Agregar nuevo paquete de viaje ✈️</a>
     </div>
   <?php endif; ?>
 
-  <!-- Listado de vuelos en tarjetas -->
+  <!-- Listado de paquetes en tarjetas -->
   <div class="cards-container">
     <?php foreach ($listaDatos as $paquetes): ?>
       <div class="card">
@@ -167,7 +177,7 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
 
             <!-- Botón para añadir al carrito -->
             <form method="post">
-              <input type="hidden" name="id_paquete" value="<?php echo $paquetes['id']; ?>">
+              <input type="hidden" name="id_paquetes" value="<?php echo $paquetes['id']; ?>">
               <input type="submit" class="boton-carrito" value="Añadir al carrito">
             </form>
            </form>
@@ -178,10 +188,10 @@ $listaDatos = mysqli_fetch_all($listapaquetes, MYSQLI_ASSOC);
                <input type="submit" value="Modificar paquete ✏️" class="btn-modificar">
               </form>
         <?php endif; ?>
-            <!-- Botón eliminar vuelo (solo admin) -->
+            <!-- Botón eliminar paquetes (solo admin) -->
             <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
               <form method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este paquete de viaje?');">
-                <input type="hidden" name="eliminar_vuelo_id" value="<?php echo $paquetes['id']; ?>">
+                <input type="hidden" name="eliminar_paquetes_id" value="<?php echo $paquetes['id']; ?>">
                 <input type="submit" value="Eliminar paquete 🗑️" class="btn-eliminar">
               </form>
             <?php endif; ?>
