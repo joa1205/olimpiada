@@ -113,7 +113,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <button type="submit">Modificar paquete</button>
 </form>
-<button type="submit"><a href="paquetes.php">volver</a></button>
 </body>
 </html>
 

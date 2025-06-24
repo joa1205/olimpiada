@@ -107,7 +107,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <button type="submit">Modificar Vuelo</button>
 </form>
-<button type="submit"><a href="vuelos.php">volver</a></button>
 </body>
 </html>
 

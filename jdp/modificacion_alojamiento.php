@@ -107,7 +107,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <button type="submit">Modificar alojamiento</button>
 </form>
- <button type="submit"><a href="alojamientos.php">volver</a></button>
 </body>
 </html>
 

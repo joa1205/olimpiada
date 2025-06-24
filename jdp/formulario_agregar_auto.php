@@ -89,7 +89,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <label>Estrellas (ej: 3)</label>
     <input type="number" min="1" max="5" name="estrellas" required>
 
-    <button type="submit">Agregar Coche</button>
+      <button type="submit"  class="btn-primario">Agregar vehiculo</button>
+    <a href="autos.php" class="btn-volver">Volver</a>
 </form>
 
 
@@ -97,6 +98,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </html>
 
 <style>
+    .btn-primario {
+  background-color: #3f0071;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+}
+    .btn-volver {
+  display: inline-block;
+  background-color: #3f0071;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+.btn-volver:hover {
+  background-color: #5b0cbf;
+}
     body {
         font-family: 'Segoe UI', sans-serif;
         background: #f4f4f4;

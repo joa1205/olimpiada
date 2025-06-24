@@ -78,7 +78,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <button type="submit">Modificar Vuelo</button>
 </form>
-<button type="submit"><a href="autos.php">volver</a></button>
 </body>
 </html>
 
